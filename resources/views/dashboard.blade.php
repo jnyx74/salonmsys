@@ -28,6 +28,13 @@
                                     </div>
                                     <div class="text-xs text-gray-500">Manicure</div>
                                 </li>
+                                <li class="py-3">
+                                    <div class="flex items-center justify-between">
+                                        <div class="text-sm font-medium text-gray-600">Sharon Bong</div>
+                                        <div class="text-xs text-gray-400">2:30 PM</div>
+                                    </div>
+                                    <div class="text-xs text-gray-500">Manicure</div>
+                                </li>
                                 <!-- Add more appointments as needed -->
                             </ul>
                         </div>
