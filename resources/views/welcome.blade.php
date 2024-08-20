@@ -38,32 +38,37 @@
             margin-left: 5px;
             color: #ffc107;
         }
-        .hero {
+        .banner {
             position: relative;
             text-align: center;
             color: white;
         }
-        .hero img {
-            width: 100%;
-            height: auto;
+        .section {
+            position: relative;
+            text-align: center;
+            color: black;
         }
-        .hero .content {
+        .banner img {
+            width: 100%;
+            height: 30%;
+        }
+        .banner .content {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
         }
-        .hero h1 {
+        .banner h1 {
             font-size: 3rem;
             margin: 0;
         }
-        .hero p {
+        .banner p {
             font-size: 1.25rem;
         }
-        .hero .buttons {
+        .banner .buttons {
             margin-top: 20px;
         }
-        .hero .buttons a {
+        .banner .buttons a {
             text-decoration: none;
             color: white;
             background-color: red;
@@ -73,36 +78,48 @@
         }
         </style>
     </head>
-    <body >
+    <body>
         
-            <div class="navbar">
-    <a href="#" class="logo"><img src="image/salon_logo.png" alt="Salon Image" style="width:10%;height:10%"></a>
-    <div class="location">
-        <span>Location:</span>
-        <span>Kuching, Sarawak</span>
-    </div>
-    <div class="links">
-        <a href="#">Home</a>
-        <a href="#">About</a>
-        <a href="#">Services</a>
-        <a href="#">Notification</a>
-        <a href="#" class="cart">Cart</a>
-        <a href="#" class="profile">Profile</a>
-    </div>
-</div>
+        <div class="navbar">
+            <a href="#" class="logo"><img src="image/salon_logo.png" alt="Salon Image" style="width:10%;height:10%"></a>
+            <div class="location">
+                <span>Location:</span>
+                <span>Kuching, Sarawak</span>
+            </div>
+            <div class="links">
+                <a href="#">Home</a>
+                <a href="#">About</a>
+                <a href="#">Services</a>
+                <a href="#">Notification</a>
+                <a href="#" class="cart">Cart</a>
+                <a href="#" class="profile">Profile</a>
+            </div>
+        </div>
 
-<div class="hero">
-    <img src="image/salon.jpg" alt="Salon Image">
-    <div class="content">
-        <h1>Salon Reservation System</h1>
-        <p>An all-in-one solution for your businesses, offering a comprehensive range of business management services such as online booking and point-of-sale transactions.</p>
-        <div class="buttons">
-            <a href="#">Pick Salon</a>
-            <a href="#">Services</a>
-        </div>
-    </div>
-</div>
-        </div>
+            <div class="banner">
+                <img src="image/salon.jpg" alt="Salon Image">
+                <div class="content">
+                    <h1>Salon Reservation System</h1>
+                    <p>An all-in-one solution for your businesses, offering a comprehensive range of business management services such as online booking and point-of-sale transactions.</p>
+                    <div class="buttons">
+                        <a href="#">Pick Salon</a>
+                        <a href="#">Services</a>
+                    </div>
+                </div>
+            </div>
+            
+                
+                <div class="section">
+                    <h1>Save Time & Costs, Improve Efficiency When Running </h1>
+                    <h1>Your Spa/Salon</h1>
+                    <p>Our features help make your daily tasks easier, so you have more time to focus on your customer.</p>
+                    <div class="buttons">
+                        <a href="#">Pick Salon</a>
+                        <a href="#">Services</a>
+                    </div>
+                </div>
+            
+       
     </body>
 </html>
 <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
