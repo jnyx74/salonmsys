@@ -95,44 +95,26 @@
                 <a href="#" class="profile">Profile</a>
             </div>
         </div>
-
-            <div class="banner">
-                <img src="image/salon.jpg" alt="Salon Image">
+        <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+            <div class="about-us-section text-center">
+                <h2>About Us</h2>
+                <hr>
                 <div class="content">
-                    <h1>Salon Reservation System</h1>
+                    <h3>For Your Business</h3>
                     <p>An all-in-one solution for your businesses, offering a comprehensive range of business management services such as online booking and point-of-sale transactions.</p>
-                    <div class="buttons">
-                        <a href="#">Pick Salon</a>
-                        <a href="#">Services</a>
-                    </div>
+                    
+                    <h4>Appointment Feature</h4>
+                    <p>We help you manage the large daily customer traffic, improving your appointment efficiency and reducing communication costs.</p>
+                    
+                    <h4>Inventory Consumption Management</h4>
+                    <p>We solve the issue of associated product consumption. When serving customers, you no longer need to manually deduct consumables. The software automatically deducts associated consumables, enhancing store operational efficiency and reducing labor costs.</p>
+                </div>
+                <div class="action-button mt-4">
+                    <a href="#" class="btn btn-primary">Pick Salon</a>
                 </div>
             </div>
-            
-                
-                <div class="section">
-                    <h1>Save Time & Costs, Improve Efficiency When Running </h1>
-                    <h1>Your Spa/Salon</h1>
-                    <p>Our features help make your daily tasks easier, so you have more time to focus on your customer.</p>
-                    <div class="buttons">
-                        <a href="#">Pick Salon</a>
-                        <a href="#">Services</a>
-                    </div>
-                </div>
-            
-       
+        </div>
     </body>
 </html>
-<div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
-            @if (Route::has('login'))
-                <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Dashboard</a>
-                    @else
-                        <a href="{{ route('login') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Log in</a>
 
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Register</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
+   
