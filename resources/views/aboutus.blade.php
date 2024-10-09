@@ -18,29 +18,7 @@
             padding: 0;
             background-color: #f8f9f1;
         }
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: white;
-            padding: 10px 20px;
-            border-bottom: 1px solid #dee2e6;
-        }
-        .navbar a {
-            color: #212529;
-            text-decoration: none;
-            margin: 0 10px;
-            font-weight: bold;
-        }
-        .navbar .location {
-            display: flex;
-            align-items: center;
-        }
-        .navbar .location span {
-            margin-left: 5px;
-            color: #ffc107;
-            font-weight: bold;
-        }
+        
         .banner {
             position: relative;
             text-align: center;
@@ -119,27 +97,17 @@
         </style>
     </head>
     <body>
+    <x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('About Us') }}
+        </h2>
+    </x-slot>
         
-        <div class="navbar">
-            <a href="#" class="logo"><img src="image/salon_logo.png" alt="Salon Image" style="width:10%;height:10%"></a>
-            <div class="location">
-                <span>Location:</span>
-                <span>Kuching, Sarawak</span>
-            </div>
-            <div class="links">
-                <a href="#">Home</a>
-                <a href="{{ url('/aboutus') }}">About</a>
-                <a href="#">Services</a>
-                <a href="#">Notification</a>
-                <a href="#" class="cart">Cart</a>
-                <a href="#" class="profile">Profile</a>
-            </div>
-        </div>
 
         <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
             <div class="about-us-section text-center">
-                <h2>About Us</h2>
-                <hr>
+               
                 <div class="content">
                     <h3>For Your Business</h3>
                     <p>An all-in-one solution for your businesses, offering a comprehensive range of business management services such as online booking and point-of-sale transactions.</p>
@@ -151,9 +119,10 @@
                     <p>We solve the issue of associated product consumption. When serving customers, you no longer need to manually deduct consumables. The software automatically deducts associated consumables, enhancing store operational efficiency and reducing labor costs.</p>
                 </div>
                 <div class="action-button mt-4">
-                    <a href="#" class="btn btn-primary">Pick Salon</a>
+                    <a href="{{route ('service.index') }}" class="btn btn-primary">Pick Salon</a>
                 </div>
             </div>
         </div>
+    </x-app-layout>
     </body>
 </html>

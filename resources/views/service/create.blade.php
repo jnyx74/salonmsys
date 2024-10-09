@@ -105,21 +105,12 @@
         </style>
     </head>
     <body>
-    <div class="navbar">
-            <a href="#" class="logo"><img src="image/salon_logo.png" alt="Salon Image" style="width:10%;height:10%"></a>
-            <div class="location">
-                <span>Location:</span>
-                <span>Kuching, Sarawak</span>
-            </div>
-            <div class="links">
-                <a href="#">Home</a>
-                <a href="{{ url('/aboutus') }}">About</a>
-                <a href="#">Services</a>
-                <a href="#">Notification</a>
-                <a href="#" class="cart">Cart</a>
-                <a href="{{ url('/profile') }}" class="profile">Profile</a>
-            </div>
-    </div>
+    <x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Hair Cut') }}
+        </h2>
+    </x-slot>
     <div class="container">
         <div class="header">
             <h1>JJ Hair Salon</h1>
@@ -197,6 +188,6 @@
             </div>
         </form>
     </div>
-
+    </x-app-layout>
     </body>
 </html>

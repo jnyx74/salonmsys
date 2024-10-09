@@ -18,26 +18,7 @@
             padding: 0;
             background-color: #f8f9f1;
         }
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: white;
-            padding: 10px 20px;
-        }
-        .navbar a {
-            color: dark;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-        .navbar .location {
-            display: flex;
-            align-items: center;
-        }
-        .navbar .location span {
-            margin-left: 5px;
-            color: #ffc107;
-        }
+        
         .banner {
             position: relative;
             text-align: center;
@@ -122,25 +103,65 @@
         .service-buttons .btn:hover {
             background-color: #333;
         }
+
+        /* Table styling */
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        table th, table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        table th {
+            background-color: #f4f4f4;
+            color: #333;
+            font-weight: bold;
+        }
+        table tbody tr:hover {
+            background-color: #f9f9f9;
+        }
+        table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        table td .btn {
+            padding: 5px 10px;
+            font-size: 14px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-right: 5px;
+        }
+        table td .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+        table td .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        table td .btn-danger {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+        table td .btn-danger:hover {
+            background-color: #c82333;
+        }
         </style>
     </head>
     <body>
-        
-        <div class="navbar">
-            <a href="#" class="logo"><img src="image/salon_logo.png" alt="Salon Image" style="width:10%;height:10%"></a>
-            <div class="location">
-                <span>Location:</span>
-                <span>Kuching, Sarawak</span>
-            </div>
-            <div class="links">
-                <a href="#">Home</a>
-                <a href="{{ url('/aboutus') }}">About</a>
-                <a href="#">Services</a>
-                <a href="#">Notification</a>
-                <a href="#" class="cart">Cart</a>
-                <a href="{{ url('/profile') }}" class="profile">Profile</a>
-            </div>
-        </div>
+    <x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Our Hair Services') }}
+        </h2>
+    </x-slot>
 
             <!-- Services Banner -->
             <div class="services-banner">
@@ -157,35 +178,36 @@
                 <a href="#" class="btn">HEAD SPA</a>
             </div>
 
-            <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Service Name</th>
-                <th>Service Detail</th>
-                <th>Service Category</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($services as $service)
-                <tr>
-                    <td>{{ $service->id }}</td>
-                    <td>{{ $service->service_name }}</td>
-                    <td>{{ $service->service_detail }}</td>
-                    <td>{{ $service->service_category }}</td>
-                    <td>
-                        <a href="#" class="btn btn-primary">Edit</a>
-                        <form action="#" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-
+            <!-- Service Table -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Service Name</th>
+                        <th>Service Detail</th>
+                        <th>Service Category</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($services as $service)
+                        <tr>
+                            <td>{{ $service->id }}</td>
+                            <td>{{ $service->service_name }}</td>
+                            <td>{{ $service->service_detail }}</td>
+                            <td>{{ $service->service_category }}</td>
+                            <td>
+                                <a href="#" class="btn btn-primary">Edit</a>
+                                <form action="#" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+    </x-app-layout>
     </body>
 </html>

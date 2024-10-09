@@ -18,26 +18,6 @@
             padding: 0;
             background-color: #f8f9f1;
         }
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: white;
-            padding: 10px 20px;
-        }
-        .navbar a {
-            color: dark;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-        .navbar .location {
-            display: flex;
-            align-items: center;
-        }
-        .navbar .location span {
-            margin-left: 5px;
-            color: #ffc107;
-        }
         .banner {
             position: relative;
             text-align: center;
@@ -50,7 +30,7 @@
         }
         .banner img {
             width: 100%;
-            height: 30%;
+            height: auto;
         }
         .banner .content {
             position: absolute;
@@ -76,25 +56,27 @@
             margin: 0 10px;
             border-radius: 5px;
         }
+        /* New styles for the header layout */
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        
         </style>
     </head>
+    
     <body>
-        
-        <div class="navbar">
-            <a href="#" class="logo"><img src="image/salon_logo.png" alt="Salon Image" style="width:10%;height:10%"></a>
-            <div class="location">
-                <span>Location:</span>
-                <span>Kuching, Sarawak</span>
-            </div>
-            <div class="links">
-                <a href="{{ url('/dashboard') }}">Dashboard</a>
-                <a href="{{ url('/aboutus') }}">About</a>
-                <a href="#">Services</a>
-                <a href="#">Notification</a>
-                <a href="#" class="cart">Cart</a>
-                <a href="{{ url('/profile') }}" class="profile">Profile</a>
-            </div>
-        </div>
+        <x-app-layout>
+            <x-slot name="header">
+                <div class="header-content">
+                    <!-- Left side: Title -->
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                        {{ __('Welcome to JJ Beauty Salon!') }}
+                    </h2>
+                </div>
+            </x-slot>
 
             <div class="banner">
                 <img src="image/salon.jpg" alt="Salon Image">
@@ -103,36 +85,15 @@
                     <p>An all-in-one solution for your businesses, offering a comprehensive range of business management services such as online booking and point-of-sale transactions.</p>
                     <div class="buttons">
                         <a href="#">Pick Salon</a>
-                        <a href="#">Services</a>
-                    </div>
+                        <a href="{{ route('service.index') }}">Services</a>
+                    </div><br><br><br>
+                    <p>Save Time & Costs, Improve Efficiency When Running</p>
+                <p>Your Spa/Salon</p>
+                <p>Our features help make your daily tasks easier, so you have more time to focus on your customer.</p>
                 </div>
             </div>
             
-                
-                <div class="section">
-                    <h1>Save Time & Costs, Improve Efficiency When Running </h1>
-                    <h1>Your Spa/Salon</h1>
-                    <p>Our features help make your daily tasks easier, so you have more time to focus on your customer.</p>
-                    <div class="buttons">
-                        <a href="#">Pick Salon</a>
-                        <a href="#">Services</a>
-                    </div>
-                </div>
             
-       
+        </x-app-layout>
     </body>
 </html>
-<div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
-            @if (Route::has('login'))
-                <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-10">
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Dashboard</a>
-                    @else
-                        <a href="{{ route('login') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Log in</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Register</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
