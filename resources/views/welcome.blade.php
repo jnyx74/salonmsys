@@ -87,12 +87,12 @@
                 <span>Kuching, Sarawak</span>
             </div>
             <div class="links">
-                <a href="#">Home</a>
+                <a href="{{ url('/dashboard') }}">Dashboard</a>
                 <a href="{{ url('/aboutus') }}">About</a>
                 <a href="#">Services</a>
                 <a href="#">Notification</a>
                 <a href="#" class="cart">Cart</a>
-                <a href="#" class="profile">Profile</a>
+                <a href="{{ url('/profile') }}" class="profile">Profile</a>
             </div>
         </div>
 

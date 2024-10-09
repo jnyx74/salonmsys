@@ -24,13 +24,11 @@
             align-items: center;
             background-color: white;
             padding: 10px 20px;
-            border-bottom: 1px solid #dee2e6;
         }
         .navbar a {
-            color: #212529;
+            color: dark;
             text-decoration: none;
             margin: 0 10px;
-            font-weight: bold;
         }
         .navbar .location {
             display: flex;
@@ -39,7 +37,6 @@
         .navbar .location span {
             margin-left: 5px;
             color: #ffc107;
-            font-weight: bold;
         }
         .banner {
             position: relative;
@@ -79,42 +76,51 @@
             margin: 0 10px;
             border-radius: 5px;
         }
+        .services-banner {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: url('image/salon.jpg') no-repeat center center/cover;
+        }
 
-        .about-us-section {
-            padding: 50px;
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .about-us-section h2 {
-            font-size: 36px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .about-us-section hr {
-            width: 50px;
-            border: 2px solid #ffc107;
-            margin: 20px auto;
-        }
-        .about-us-section .content h3,
-        .about-us-section .content h4 {
-            font-size: 24px;
-            font-weight: bold;
-            color: #212529;
-            margin-top: 30px;
-        }
-        .about-us-section .content p {
-            font-size: 16px;
-            color: #6c757d;
-            margin: 10px 0;
-            line-height: 1.8;
-        }
-        .action-button a {
-            text-decoration: none;
-            color: white;
-            background-color: #007bff;
-            padding: 10px 20px;
+        .services-banner .banner-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px 40px;
             border-radius: 5px;
-            font-weight: bold;
+        }
+
+        .services-banner h1 {
+            color: #fff;
+            font-size: 36px;
+            margin: 0;
+        }
+
+        .service-buttons {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        .service-buttons .btn {
+            background-color: #000;
+            color: #fff;
+            padding: 10px 30px;
+            border: none;
+            border-radius: 50px;
+            margin: 0 10px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .service-buttons .btn:hover {
+            background-color: #333;
         }
         </style>
     </head>
@@ -132,28 +138,54 @@
                 <a href="#">Services</a>
                 <a href="#">Notification</a>
                 <a href="#" class="cart">Cart</a>
-                <a href="#" class="profile">Profile</a>
+                <a href="{{ url('/profile') }}" class="profile">Profile</a>
             </div>
         </div>
 
-        <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-            <div class="about-us-section text-center">
-                <h2>About Us</h2>
-                <hr>
-                <div class="content">
-                    <h3>For Your Business</h3>
-                    <p>An all-in-one solution for your businesses, offering a comprehensive range of business management services such as online booking and point-of-sale transactions.</p>
-                    
-                    <h4>Appointment Feature</h4>
-                    <p>We help you manage the large daily customer traffic, improving your appointment efficiency and reducing communication costs.</p>
-                    
-                    <h4>Inventory Consumption Management</h4>
-                    <p>We solve the issue of associated product consumption. When serving customers, you no longer need to manually deduct consumables. The software automatically deducts associated consumables, enhancing store operational efficiency and reducing labor costs.</p>
-                </div>
-                <div class="action-button mt-4">
-                    <a href="#" class="btn btn-primary">Pick Salon</a>
+            <!-- Services Banner -->
+            <div class="services-banner">
+                <div class="banner-content">
+                    <h1>Our Hair Services</h1>
                 </div>
             </div>
-        </div>
+
+            <!-- Service Buttons -->
+            <div class="service-buttons">
+                <a href="{{ route('service.create') }}" class="btn">HAIRCUT</a>
+                <a href="#" class="btn">PERM & COLOUR</a>
+                <a href="#" class="btn">TREATMENT</a>
+                <a href="#" class="btn">HEAD SPA</a>
+            </div>
+
+            <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Service Name</th>
+                <th>Service Detail</th>
+                <th>Service Category</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($services as $service)
+                <tr>
+                    <td>{{ $service->id }}</td>
+                    <td>{{ $service->service_name }}</td>
+                    <td>{{ $service->service_detail }}</td>
+                    <td>{{ $service->service_category }}</td>
+                    <td>
+                        <a href="#" class="btn btn-primary">Edit</a>
+                        <form action="#" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
     </body>
 </html>
