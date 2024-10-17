@@ -172,10 +172,10 @@
 
             <!-- Service Buttons -->
             <div class="service-buttons">
-                <a href="{{ route('service.create') }}" class="btn">HAIRCUT</a>
-                <a href="{{ route('hairdresser.index') }}" class="btn">PERM & COLOUR</a>
+                <a href="{{ route('service.create') }}" class="btn">New Service</a>
+                <!-- <a href="{{ route('hairdresser.index') }}" class="btn">PERM & COLOUR</a>
                 <a href="{{ route('hairdresser.create') }}" class="btn">TREATMENT</a>
-                <a href="{{ route('appointment.index') }}" class="btn">HEAD SPA</a>
+                <a href="{{ route('appointment.index') }}" class="btn">HEAD SPA</a> -->
             </div>
 
             <!-- Service Table -->

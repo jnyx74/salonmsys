@@ -131,49 +131,10 @@
         
         <form action="{{route('service.store')}}" method="POST" enctype="multipart/form-data">
         @csrf
-            <div class="form-group">
-                <label for="service">Select Services</label>
-                <select id="service" name="service">
-                    <option value="">Select</option>
-                    <option value="haircut">Haircut</option>
-                    <option value="color">Perm & Color</option>
-                    <option value="treatment">Treatment</option>
-                    <option value="head-spa">Head Spa</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="hairdresser">Select Hairdresser</label>
-                <select id="hairdresser" name="hairdresser">
-                    <option value="">Select</option>
-                    <option value="hairdresser1">Hairdresser 1</option>
-                    <option value="hairdresser2">Hairdresser 2</option>
-                    <option value="hairdresser3">Hairdresser 3</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="dateslot">Select Available Dateslot</label>
-                <select id="dateslot" name="dateslot">
-                    <option value="">Select</option>
-                   
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="timeslot">Select Available Timeslot</label>
-                <select id="timeslot" name="timeslot">
-                    <option value="">Select</option>
-                    <option value="10am">10:00 AM</option>
-                    <option value="12pm">12:00 PM</option>
-                    <option value="2pm">2:00 PM</option>
-                    <option value="4pm">4:00 PM</option>
-                </select>
-            </div>
 
             <div class="form-group">
                 <strong>Service:</strong>
-                    <input type="text" name="service_name" id="service_name" class="form-control" placeholder="Service Name">
+                    <input type="text" name="service_name" id="service_name" class="form-control" placeholder="Service Name" style="width:100%">
                         @error('service_name')
                         <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                         @enderror
@@ -181,15 +142,15 @@
 
             <div class="form-group">
                 <strong>Service detail:</strong>
-                    <input type="text" name="service_detail" id="service_detail" class="form-control" placeholder="Service Name">
+                    <input type="text" name="service_detail" id="service_detail" class="form-control" placeholder="Service Name" style="width:100%">
                         @error('service_detail')
                         <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                         @enderror
             </div>
 
             <div class="form-group">
-                <strong>Service detail:</strong>
-                    <input type="text" name="service_category" id="service_category"  class="form-control" placeholder="Service Name">
+                <strong>Service category:</strong>
+                    <input type="text" name="service_category" id="service_category"  class="form-control" placeholder="Service Name" style="width:100%">
                         @error('service_category')
                         <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                         @enderror
