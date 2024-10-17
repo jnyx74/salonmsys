@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\HairdresserController;
+use App\Http\Controllers\AppointmentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,13 +32,20 @@ Route::get('/aboutus', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     // Route to display the service creation form
     Route::get('/service/create', [ServiceController::class, 'create'])->name('service.create');
-
-    // Route to display the list of services
     Route::get('/service/index', [ServiceController::class, 'index'])->name('service.index');
-
-    // Route to store a new service (POST request)
     Route::post('/service/store', [ServiceController::class, 'store'])->name('service.store');
-
+    // Route to display the hairdresser creation form
+    Route::get('/hairdresser/create', [HairdresserController::class, 'create'])->name('hairdresser.create');
+    Route::get('/hairdresser/index', [HairdresserController::class, 'index'])->name('hairdresser.index');
+    Route::get('/hairdresser/edit/{id}', [HairdresserController::class, 'edit'])->name('hairdresser.edit');
+    Route::put('/hairdresser/update/{id}', [HairdresserController::class, 'update'])->name('hairdresser.update');
+    Route::post('/hairdresser/store', [HairdresserController::class, 'store'])->name('hairdresser.store');
+    // Route to display the appointment creation form
+    Route::get('/appointment/create', [AppointmentController::class, 'create'])->name('appointment.create');
+    Route::get('/appointment/index', [AppointmentController::class, 'index'])->name('appointment.index');
+    Route::get('/appointment/edit/{id}', [AppointmentController::class, 'edit'])->name('appointment.edit');
+    Route::put('/appointment/update/{id}', [AppointmentController::class, 'update'])->name('appointment.update');
+    Route::post('/appointment/store', [AppointmentController::class, 'store'])->name('appointment.store');
     // Profile management routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

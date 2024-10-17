@@ -57,14 +57,14 @@
             margin: 0 10px;
             border-radius: 5px;
         }
-        .services-banner {
+        .appoinment-banner {
             position: relative;
             width: 100%;
             height: 400px;
             background: url('image/salon.jpg') no-repeat center center/cover;
         }
 
-        .services-banner .banner-content {
+        .appoinment-banner .banner-content {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -74,20 +74,20 @@
             border-radius: 5px;
         }
 
-        .services-banner h1 {
+        .appoinment-banner h1 {
             color: #fff;
             font-size: 36px;
             margin: 0;
         }
 
-        .service-buttons {
+        .appointment-buttons {
             display: flex;
             justify-content: center;
             padding: 20px;
             background-color: #fff;
         }
 
-        .service-buttons .btn {
+        .appointment-buttons .btn {
             background-color: #000;
             color: #fff;
             padding: 10px 30px;
@@ -100,7 +100,7 @@
             transition: background-color 0.3s ease;
         }
 
-        .service-buttons .btn:hover {
+        .appointment-buttons .btn:hover {
             background-color: #333;
         }
 
@@ -159,45 +159,49 @@
     <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Our Hair Services') }}
+            {{ __('Customer Appointment') }}
         </h2>
     </x-slot>
 
-            <!-- Services Banner -->
-            <div class="services-banner">
+            <!-- appoinment Banner -->
+            <div class="appoinment-banner">
                 <div class="banner-content">
-                    <h1>Our Hair Services</h1>
+                    <h1>Appointment list</h1>
                 </div>
             </div>
 
-            <!-- Service Buttons -->
-            <div class="service-buttons">
-                <a href="{{ route('service.create') }}" class="btn">HAIRCUT</a>
-                <a href="{{ route('hairdresser.index') }}" class="btn">PERM & COLOUR</a>
-                <a href="{{ route('hairdresser.create') }}" class="btn">TREATMENT</a>
-                <a href="{{ route('appointment.index') }}" class="btn">HEAD SPA</a>
+            <!-- appointment Buttons -->
+            <div class="appointment-buttons">
+                <a href="{{ route('appointment.create') }}" class="btn">New Appointment</a>
+             
             </div>
 
-            <!-- Service Table -->
+            <!-- appointment Table -->
             <table>
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Service Name</th>
-                        <th>Service Detail</th>
-                        <th>Service Category</th>
+                        <th>Customer Name</th>
+                        <th>Customer Phone</th>
+                        <th>Appointment Date</th>
+                        <th>Appointment Time</th>
+                        <th>Created</th>
+                        <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($services as $service)
+                    @foreach ($appointments as $appointment)
                         <tr>
-                            <td>{{ $service->id }}</td>
-                            <td>{{ $service->service_name }}</td>
-                            <td>{{ $service->service_detail }}</td>
-                            <td>{{ $service->service_category }}</td>
+                            <td>{{ $appointment->id }}</td>
+                            <td>{{ $appointment->name }}</td>
+                            <td>{{ $appointment->phone }}</td>
+                            <td>{{ $appointment->appointment_date }}</td>
+                            <td>{{ $appointment->appointment_time }}</td>
+                            <td>{{ $appointment->created_at }}</td>
+                            <td>{{ $appointment->status }}</td>
                             <td>
-                                <a href="#" class="btn btn-primary">Edit</a>
+                                <a href="{{ route('appointment.edit',$appointment->id) }}" class="btn btn-primary">Edit</a>
                                 <form action="#" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')

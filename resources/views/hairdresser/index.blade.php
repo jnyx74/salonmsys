@@ -57,14 +57,14 @@
             margin: 0 10px;
             border-radius: 5px;
         }
-        .services-banner {
+        .hairdressers-banner {
             position: relative;
             width: 100%;
             height: 400px;
             background: url('image/salon.jpg') no-repeat center center/cover;
         }
 
-        .services-banner .banner-content {
+        .hairdressers-banner .banner-content {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -74,20 +74,20 @@
             border-radius: 5px;
         }
 
-        .services-banner h1 {
+        .hairdressers-banner h1 {
             color: #fff;
             font-size: 36px;
             margin: 0;
         }
 
-        .service-buttons {
+        .hairdresser-buttons {
             display: flex;
             justify-content: center;
             padding: 20px;
             background-color: #fff;
         }
 
-        .service-buttons .btn {
+        .hairdresser-buttons .btn {
             background-color: #000;
             color: #fff;
             padding: 10px 30px;
@@ -100,7 +100,7 @@
             transition: background-color 0.3s ease;
         }
 
-        .service-buttons .btn:hover {
+        .hairdresser-buttons .btn:hover {
             background-color: #333;
         }
 
@@ -159,45 +159,45 @@
     <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Our Hair Services') }}
+            {{ __('Our Hair Hairdresser') }}
         </h2>
     </x-slot>
 
-            <!-- Services Banner -->
-            <div class="services-banner">
+            <!-- hairdressers Banner -->
+            <div class="hairdressers-banner">
                 <div class="banner-content">
-                    <h1>Our Hair Services</h1>
+                    <h1>Hairdresser list</h1>
                 </div>
             </div>
 
-            <!-- Service Buttons -->
-            <div class="service-buttons">
-                <a href="{{ route('service.create') }}" class="btn">HAIRCUT</a>
-                <a href="{{ route('hairdresser.index') }}" class="btn">PERM & COLOUR</a>
-                <a href="{{ route('hairdresser.create') }}" class="btn">TREATMENT</a>
-                <a href="{{ route('appointment.index') }}" class="btn">HEAD SPA</a>
+            <!-- hairdresser Buttons -->
+            <div class="hairdresser-buttons">
+                <a href="{{ route('hairdresser.create') }}" class="btn">New Hairdresser</a>
+             
             </div>
 
-            <!-- Service Table -->
+            <!-- hairdresser Table -->
             <table>
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Service Name</th>
-                        <th>Service Detail</th>
-                        <th>Service Category</th>
+                        <th>Hairdresser Name</th>
+                        <th>Hairdresser Email</th>
+                        <th>Hairdresser Phone</th>
+                        <th>Hairdresser Position</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($services as $service)
+                    @foreach ($hairdressers as $hairdresser)
                         <tr>
-                            <td>{{ $service->id }}</td>
-                            <td>{{ $service->service_name }}</td>
-                            <td>{{ $service->service_detail }}</td>
-                            <td>{{ $service->service_category }}</td>
+                            <td>{{ $hairdresser->id }}</td>
+                            <td>{{ $hairdresser->name }}</td>
+                            <td>{{ $hairdresser->email }}</td>
+                            <td>{{ $hairdresser->phone }}</td>
+                            <td>{{ $hairdresser->position }}</td>
                             <td>
-                                <a href="#" class="btn btn-primary">Edit</a>
+                                <a href="{{ route('hairdresser.edit',$hairdresser->id) }}" class="btn btn-primary">Edit</a>
                                 <form action="#" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')

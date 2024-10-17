@@ -109,6 +109,7 @@
             cursor: pointer;
             border-radius: 5px;
         }
+
         @media (max-width: 768px) {
             .container {
                 width: 90%;
@@ -120,83 +121,60 @@
     <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Hair Cut') }}
+            {{ __(' Edit Hairdresser Detail') }}
         </h2>
     </x-slot>
     <div class="container">
         <div class="header">
-            <h1>JJ Hair Salon</h1>
-            <p>We provide clean and affordable prices for hair services. We also offer haircuts for children and infants. Reserve your slot now and be served without delay.</p>
+            <h1>JJ Hair Salon-Edit Hairdresser Detail</h1>
         </div>
         
-        <form action="{{route('service.store')}}" method="POST" enctype="multipart/form-data">
+        <form action="{{route('hairdresser.update',$hairdresser->id)}}" method="POST" enctype="multipart/form-data">
         @csrf
+        @method('PUT')
+        
             <div class="form-group">
-                <label for="service">Select Services</label>
-                <select id="service" name="service">
-                    <option value="">Select</option>
-                    <option value="haircut">Haircut</option>
-                    <option value="color">Perm & Color</option>
-                    <option value="treatment">Treatment</option>
-                    <option value="head-spa">Head Spa</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="hairdresser">Select Hairdresser</label>
-                <select id="hairdresser" name="hairdresser">
-                    <option value="">Select</option>
-                    <option value="hairdresser1">Hairdresser 1</option>
-                    <option value="hairdresser2">Hairdresser 2</option>
-                    <option value="hairdresser3">Hairdresser 3</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="dateslot">Select Available Dateslot</label>
-                <select id="dateslot" name="dateslot">
-                    <option value="">Select</option>
-                   
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="timeslot">Select Available Timeslot</label>
-                <select id="timeslot" name="timeslot">
-                    <option value="">Select</option>
-                    <option value="10am">10:00 AM</option>
-                    <option value="12pm">12:00 PM</option>
-                    <option value="2pm">2:00 PM</option>
-                    <option value="4pm">4:00 PM</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <strong>Service:</strong>
-                    <input type="text" name="service_name" id="service_name" class="form-control" placeholder="Service Name">
-                        @error('service_name')
+                <label for="hairdresser">Name</label>
+                <input type="text" name="name" id="name" class="form-control" style="width:100%" value="{{ $hairdresser->name }}">
+                        @error('name')
                         <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                         @enderror
             </div>
 
             <div class="form-group">
-                <strong>Service detail:</strong>
-                    <input type="text" name="service_detail" id="service_detail" class="form-control" placeholder="Service Name">
-                        @error('service_detail')
+                <label for="hairdresser">Email</label>
+                <input type="text" name="email" id="email" class="form-control" style="width:100%" value="{{ $hairdresser->email }}">
+                        @error('email')
                         <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                         @enderror
             </div>
 
             <div class="form-group">
-                <strong>Service detail:</strong>
-                    <input type="text" name="service_category" id="service_category"  class="form-control" placeholder="Service Name">
-                        @error('service_category')
-                        <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
-                        @enderror
+                <label for="hairdresser">Phone</label>
+                    <input type="text" name="phone" id="phone" class="form-control" style="width:100%" value="{{ $hairdresser->phone }}">
+                            @error('phone')
+                            <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                            @enderror
             </div>
 
             <div class="form-group">
-                <button class="btn" type="submit">Submit</button>
+                <label for="hairdresser">Position</label>
+                    <input type="text" name="position" id="position" class="form-control" style="width:100%" value="{{ $hairdresser->position }}">
+                            @error('position')
+                            <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                            @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="hairdresser">Job description</label>
+                    <textarea type="text" name="job_description" id="job_description" class="form-control" style="width:100%" value="{{ $hairdresser->job_description }}"></textarea>
+                            @error('job_description')
+                            <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                            @enderror
+            </div>
+
+            <div class="form-group">
+                <button class="btn" type="submit">Update</button>
             </div>
         </form>
     </div>
