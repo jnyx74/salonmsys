@@ -44,6 +44,13 @@ class AppointmentController extends Controller
  
         return redirect()->route('appointment.index')->with('success','appointment has been created successfully.');
     }
+
+    public function showCalendar()
+{
+    $appointments = Appointment::all(); // Assuming you have an Appointment model
+    return view('appointment.calendar', compact('appointments'));
+}
+
  
     /**
     * Display the specified resource.

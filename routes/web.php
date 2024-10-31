@@ -40,12 +40,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/hairdresser/edit/{id}', [HairdresserController::class, 'edit'])->name('hairdresser.edit');
     Route::put('/hairdresser/update/{id}', [HairdresserController::class, 'update'])->name('hairdresser.update');
     Route::post('/hairdresser/store', [HairdresserController::class, 'store'])->name('hairdresser.store');
+    Route::delete('/hairdresser/{hairdresser}', [HairdresserController::class, 'destroy'])->name('hairdresser.destroy');
     // Route to display the appointment creation form
     Route::get('/appointment/create', [AppointmentController::class, 'create'])->name('appointment.create');
     Route::get('/appointment/index', [AppointmentController::class, 'index'])->name('appointment.index');
     Route::get('/appointment/edit/{id}', [AppointmentController::class, 'edit'])->name('appointment.edit');
     Route::put('/appointment/update/{id}', [AppointmentController::class, 'update'])->name('appointment.update');
     Route::post('/appointment/store', [AppointmentController::class, 'store'])->name('appointment.store');
+    Route::get('/appointment/calendar', [AppointmentController::class, 'showCalendar'])->name('appointment.calendar');
+
     // Profile management routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -89,7 +89,7 @@ class HairdresserController extends Controller
     */
     public function destroy(Hairdresser $hairdresser)
     {
-        $hairdressers->delete();
+        $hairdresser->delete();
         return redirect()->route('hairdresser.index')->with('success','Hairdresser has been deleted successfully');
     }
 
