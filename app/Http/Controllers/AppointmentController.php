@@ -71,8 +71,13 @@ class AppointmentController extends Controller
     */
     public function edit($id)
     {
+        // Fetch services from the service table
+        $services = Service::all(); 
+        // Fetch services from the hairdresser table
+        $hairdressers = Hairdresser::all(); 
+
         $appointment = Appointment::findOrFail($id);
-        return view('appointment.edit',compact('appointment'));
+        return view('appointment.edit',compact('appointment','services','hairdressers'));
     }
  
     /**
@@ -87,7 +92,7 @@ class AppointmentController extends Controller
         $appointment = Appointment::findOrFail($id);
         $appointment->update($request->all());
  
-        return redirect()->route('appointment.index')->with('success','appointment Has Been updated successfully');
+        return redirect()->route('appointment.calendar')->with('success','appointment Has Been updated successfully');
     }
  
     /**
@@ -99,7 +104,7 @@ class AppointmentController extends Controller
     public function destroy(Appointment $appointment)
     {
         $appointment->delete();
-        return redirect()->route('appointment.index')->with('success','appointment has been deleted successfully');
+        return redirect()->route('appointment.calendar')->with('success','appointment has been deleted successfully');
     }
 
 }

@@ -159,7 +159,10 @@
             <div class="form-group">
                 <label for="service_id">Service Name</label>
                 <select name="service_id" id="service_id" class="form-control" style="width:100%" >
-                    
+                <option value="" disabled selected>Select a service</option>
+                    @foreach($services as $service)
+                        <option value="{{ $service->id }}">{{ $service->service_name }}</option>
+                    @endforeach
                 </select>
                 @error('service_id')
                     <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
@@ -169,7 +172,10 @@
             <div class="form-group">
                 <label for="hairdresser_id">Hairdresser Name</label>
                 <select name="hairdresser_id" id="hairdresser_id" class="form-control" style="width:100%" >
-                   
+                <option value="" disabled selected>Select a hairdresser</option>
+                    @foreach($hairdressers as $hairdresser)
+                        <option value="{{ $hairdresser->id }}">{{ $hairdresser->name }}</option>
+                    @endforeach 
                 </select>
                 @error('hairdresser_id')
                     <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
