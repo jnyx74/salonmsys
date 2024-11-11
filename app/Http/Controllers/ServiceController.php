@@ -46,30 +46,29 @@ class ServiceController extends Controller
     }
 
     
-    public function edit(Service $service)
+    public function edit($id)
     {
-        return view('service.edit',compact('s
-        ervice'));
+        $service = Service::findOrFail($id);
+        return view('service.edit',compact('service'));
     }
 
     
-    public function update(Request $request, Service $service)
+    public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required',
-            'address' => 'required',
-        ]);
-        
-        $Service->fill($request->post())->save();
-
+        $service = Service::findOrFail($id);
+        $service->update($request->all());
+ 
         return redirect()->route('service.index')->with('success','Service Has Been updated successfully');
+
+       
     }
 
     
     public function destroy(Service $service)
     {
-        $Service->delete();
+        $service->delete();
         return redirect()->route('service.index')->with('success','Service has been deleted successfully');
     }
+
+  
 }

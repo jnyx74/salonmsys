@@ -9,7 +9,6 @@
 <body>
     <div id="calendar"></div>
 
-    <!-- Place the script here, after the HTML -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');
@@ -23,18 +22,18 @@
                             title: '{{ $appointment->name }}',
                             start: '{{ $appointment->appointment_date }}T{{ $appointment->appointment_time }}',
                             extendedProps: {
-                                phone: '{{ $appointment->phone }}',
-                                created_at: '{{ $appointment->created_at }}',
-                                status: '{{ $appointment->status }}'
+                                phone: '{{ $appointment->phone ?? "N/A" }}',
+                                created_at: '{{ $appointment->created_at ?? "N/A" }}',
+                                status: '{{ $appointment->status ?? "N/A" }}'
                             }
                         },
                         @endforeach
                     ],
                     eventClick: function(info) {
                         alert(`Customer: ${info.event.title}
-                    Phone: ${info.event.extendedProps.phone}
-                    Appointment Time: ${info.event.start.toISOString().slice(0, 19).replace('T', ' ')}
-                    Status: ${info.event.extendedProps.status}`);
+Phone: ${info.event.extendedProps.phone}
+Appointment Time: ${info.event.start.toISOString().slice(0, 19).replace('T', ' ')}
+Status: ${info.event.extendedProps.status}`);
                     }
                 });
                 calendar.render();

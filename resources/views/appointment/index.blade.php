@@ -202,7 +202,7 @@
                             <td>{{ $appointment->status }}</td>
                             <td>
                                 <a href="{{ route('appointment.edit',$appointment->id) }}" class="btn btn-primary">Edit</a>
-                                <form action="#" method="POST" style="display:inline;">
+                                <form action="{{ route('appointment.destroy', $appointment->id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger">Delete</button>

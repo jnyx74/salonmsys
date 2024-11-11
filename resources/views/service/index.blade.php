@@ -197,8 +197,8 @@
                             <td>{{ $service->service_detail }}</td>
                             <td>{{ $service->service_category }}</td>
                             <td>
-                                <a href="#" class="btn btn-primary">Edit</a>
-                                <form action="#" method="POST" style="display:inline;">
+                                <a href="{{ route('service.edit',$service->id) }}" class="btn btn-primary">Edit</a>
+                                <form action="{{ route('service.destroy', $service->id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger">Delete</button>

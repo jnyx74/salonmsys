@@ -98,7 +98,7 @@ class AppointmentController extends Controller
     */
     public function destroy(Appointment $appointment)
     {
-        $appointments->delete();
+        $appointment->delete();
         return redirect()->route('appointment.index')->with('success','appointment has been deleted successfully');
     }
 

@@ -109,7 +109,6 @@
             cursor: pointer;
             border-radius: 5px;
         }
-
         @media (max-width: 768px) {
             .container {
                 width: 90%;
@@ -121,75 +120,39 @@
     <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __(' Edit Appointment Detail') }}
+            {{ __('Edit Hair Cut Detail') }}
         </h2>
     </x-slot>
     <div class="container">
         <div class="header">
-            <h1>JJ Hair Salon-Edit Appointment Detail</h1>
+            <h1>JJ Hair Salon-Edit Hair Cut Detail</h1>
         </div>
         
-        <form action="{{route('appointment.update',$appointment->id)}}" method="POST" enctype="multipart/form-data">
+        <form action="{{route('service.update',$service->id)}}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
             <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" name="name" id="name" class="form-control" style="width:100%" value="{{ $appointment->name }}">
-                        @error('name')
+                <strong>Service:</strong>
+                    <input type="text" name="service_name" id="service_name" class="form-control" value="{{ $service->service_name }}" style="width:100%">
+                        @error('service_name')
                         <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                         @enderror
             </div>
 
             <div class="form-group">
-                <label for="phone">Phone</label>
-                    <input type="text" name="phone" id="phone" class="form-control" style="width:100%" value="{{ $appointment->phone }}">
-                            @error('phone')
-                            <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
-                            @enderror
+                <strong>Service detail:</strong>
+                    <input type="text" name="service_detail" id="service_detail" class="form-control" value="{{ $service->service_detail }}" style="width:100%">
+                        @error('service_detail')
+                        <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                        @enderror
             </div>
 
             <div class="form-group">
-                <label for="status">Status</label>
-                <input type="time" name="status" id="status" class="status" style="width:100%" value="{{ $appointment->status }}">
-                @error('status')
-                    <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="service_id">Service Name</label>
-                <select name="service_id" id="service_id" class="form-control" style="width:100%" >
-                    
-                </select>
-                @error('service_id')
-                    <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="hairdresser_id">Hairdresser Name</label>
-                <select name="hairdresser_id" id="hairdresser_id" class="form-control" style="width:100%" >
-                   
-                </select>
-                @error('hairdresser_id')
-                    <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="appointment_date">Appointment Date</label>
-                <input type="date" name="appointment_date" id="appointment_date" class="appointment_date" style="width:100%">
-                @error('appointment_date')
-                    <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="appointment_time">Appointment Time</label>
-                <input type="time" name="appointment_time" id="appointment_time" class="appointment_time" style="width:100%" >
-                @error('appointment_time')
-                    <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
-                @enderror
+                <strong>Service category:</strong>
+                    <input type="text" name="service_category" id="service_category"  class="form-control" value="{{ $service->service_category }}" style="width:100%">
+                        @error('service_category')
+                        <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                        @enderror
             </div>
 
             <div class="form-group">
