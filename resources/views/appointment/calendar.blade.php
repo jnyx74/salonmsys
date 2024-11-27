@@ -41,7 +41,7 @@
             color: #ffc107;
         }
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 10px auto;
             padding: 20px;
             background-color: #fff;
@@ -140,6 +140,129 @@
                 width: 90%;
             }
         }
+        /* Modal Container */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    /* Modal Content */
+    .modal-content {
+        background: white;
+        width: 90%;
+        max-width: 500px;
+        border-radius: 10px;
+        padding: 20px 30px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        position: relative;
+        animation: slideIn 0.4s ease-in-out;
+    }
+
+    /* Modal Header */
+    .modal-content h3 {
+        font-size: 1.5rem;
+        color: #333;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 10px;
+    }
+
+    /* Appointment Details */
+    .modal-content p {
+        font-size: 1rem;
+        margin: 10px 0;
+        color: #555;
+    }
+
+    .modal-content p strong {
+        color: #333;
+    }
+
+    /* Action Buttons */
+    .modal-actions {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .modal-actions a, .modal-actions button {
+        flex: 1;
+        padding: 10px 15px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+
+    .modal-actions a {
+        background-color: #007BFF;
+        color: white;
+    }
+
+    .modal-actions a:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+    .modal-actions button {
+        background-color: #DC3545;
+        color: white;
+    }
+
+    .modal-actions button:hover {
+        background-color: #a71d2a;
+        transform: scale(1.05);
+    }
+
+    .modal-content button.close-modal {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #aaa;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .modal-content button.close-modal:hover {
+        color: #333;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from {
+            background-color: rgba(0, 0, 0, 0);
+        }
+        to {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
         </style>
 <body>
 <x-app-layout>
@@ -153,10 +276,9 @@
       <div class="appointment-buttons">
                 <a href="{{ route('appointment.create') }}" class="btn">New Appointment</a>
              
-            </div>  
-    <div id="calendar"></div>
+            </div>  <div id="calendar"></div>
 
-        <?php
+    <?php
     // Database connection
     $servername = "localhost";
     $username = "root";
@@ -164,37 +286,32 @@
     $dbname = "salonsysdb";
 
     $conn = new mysqli($servername, $username, $password, $dbname);
-
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
 
     // Fetch appointments
-    $sql = "SELECT id, name, appointment_date, appointment_time FROM appointments"; // Assuming 'id' is the primary key
+    $sql = "SELECT id, name, appointment_date, appointment_time FROM appointments";
     $result = $conn->query($sql);
 
-    $events = array();
-
+    $events = [];
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
-            $events[] = array(
-                'id' => $row['id'],  // Add the id here
+            $events[] = [
+                'id' => $row['id'],
                 'title' => $row['name'],
                 'start' => $row['appointment_date'] . 'T' . $row['appointment_time'],
                 'allDay' => false
-            );
+            ];
         }
     }
-
     $conn->close();
     ?>
-
     </div>
 </x-app-layout>
 <script>
-    var events = <?php echo json_encode($events); ?>;
-
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
+        var events = <?php echo json_encode($events); ?>;
         var calendarEl = document.getElementById('calendar');
 
         var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -205,27 +322,99 @@
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
-            eventClick: function(info) {
-                // Get appointment details
-                var appointmentId = info.event.id;
-                var appointmentTitle = info.event.title;
-                var appointmentTime = info.event.start.toLocaleTimeString();
+            dateClick: function (info) {
+                // Modal for creating new appointment
+               // Get today's date and set time to midnight
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-                // Define action HTML with Laravel-style routes for edit and delete
-                var actionHTML = `
-                    <div style="text-align: center;">
-                        <h3>Appointment: ${appointmentTitle}</h3>
-                        <p>Time: ${appointmentTime}</p>
-                        <a href="/appointment/edit/${appointmentId}" class="btn btn-primary" style="background-color: #4CAF50; color: white; padding: 10px; margin: 5px;">Edit</a>
-                        <form action="/appointment/${appointmentId}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger" style="background-color: #f44336; color: white; padding: 10px; margin: 5px;">Delete</button>
+    // Get the clicked date
+    const clickedDate = new Date(info.dateStr);
+    
+    // Calculate the time difference in days
+    const timeDiff = clickedDate - today;
+    const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+
+    if (daysDiff < 1) {
+        alert("Appointments must be booked at least 1 day in advance.");
+        return; // Stop further execution
+    }
+
+    // Rest of the modal creation logic
+    var modal = document.createElement('div');
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100%';
+    modal.style.height = '100%';
+    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    modal.style.display = 'flex';
+    modal.style.justifyContent = 'center';
+    modal.style.alignItems = 'center';
+    modal.style.zIndex = '1000';
+
+    modal.innerHTML = `
+        <div style="background-color: white; padding: 20px; border-radius: 10px; width: 400px; position: relative;">
+            <h2>Create New Appointment</h2>
+            <form action="/appointment/store" method="POST">
+                @csrf
+                <label>Name:</label>
+                <input type="text" name="name" required style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                <label>Phone:</label>
+                <input type="text" name="phone" required  style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                            <div class="form-group">
+                                <label for="status">Status</label>
+                                <input type="time" name="status" id="status" class="status" style="width:100%">
+                                @error('status')<div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>@enderror
+                            </div>
+
+                            <div class="form-group">
+                                <label for="service_id">Service Name</label>
+                                <select name="service_id" id="service_id" class="form-control" style="width:100%">
+                                    <option value="" disabled selected>Select a service</option>
+                                    @foreach($services as $service)
+                                        <option value="{{ $service->id }}">{{ $service->service_name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('service_id')<div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>@enderror
+                            </div>
+
+                            <div class="form-group">
+                                <label for="hairdresser_id">Hairdresser Name</label>
+                                <select name="hairdresser_id" id="hairdresser_id" class="form-control" style="width:100%">
+                                    <option value="" disabled selected>Select a hairdresser</option>
+                                    @foreach($hairdressers as $hairdresser)
+                                        <option value="{{ $hairdresser->id }}">{{ $hairdresser->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('hairdresser_id')<div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>@enderror
+                            </div><label>Appointment Date:</label>
+                            <input type="date" name="appointment_date" value="${info.dateStr}" readonly>
+                            <label>Appointment Time:</label>
+                            <input type="time" name="appointment_time" required>
+                            <button type="submit" class="btn" style="width: 100%; background-color: #4CAF50; color: white;">Save</button>
                         </form>
+                        <button onclick="closeModal()" style="padding: 5px 10px; margin-top: 10px; width: 100%;">Cancel</button>
                     </div>
                 `;
 
-                // Create a modal div to show the popup
+                document.body.appendChild(modal);
+
+                window.closeModal = function () {
+                    document.body.removeChild(modal);
+                };
+
+                modal.addEventListener('click', function (event) {
+                    if (event.target === modal) closeModal();
+                });
+            },
+            eventClick: function (info) {
+                // Modal for viewing, editing, or deleting an appointment
+                var appointmentId = info.event.id;
+                var appointmentTitle = info.event.title;
+                var appointmentDate = info.event.start.toISOString().split('T')[0];
+                var appointmentTime = info.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
                 var modal = document.createElement('div');
                 modal.style.position = 'fixed';
                 modal.style.top = '0';
@@ -236,35 +425,40 @@
                 modal.style.display = 'flex';
                 modal.style.justifyContent = 'center';
                 modal.style.alignItems = 'center';
-                modal.style.zIndex = '1000';  // Ensure modal is above other elements
+                modal.style.zIndex = '1000';
+
                 modal.innerHTML = `
-                    <div style="background-color: white; padding: 20px; border-radius: 10px; width: 300px; position: relative;">
-                        ${actionHTML}
-                        <button onclick="closeModal()" style="padding: 5px 10px; margin-top: 10px;">Close</button>
+                    <div class="modal-content">
+                        <button class="close-modal" onclick="closeModal()">×</button>
+                        <h3>Appointment Details</h3>
+                        <p><strong>Title:</strong> ${appointmentTitle}</p>
+                        <p><strong>Date:</strong> ${appointmentDate}</p>
+                        <p><strong>Time:</strong> ${appointmentTime}</p>
+                        <div class="modal-actions">
+                            <a href="/appointment/edit/${appointmentId}">Edit</a>
+                            <form action="/appointment/${appointmentId}" method="POST" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit">Delete</button>
+                            </form>
+                        </div>
                     </div>
                 `;
 
                 document.body.appendChild(modal);
 
-                // Prevent click events from propagating outside the modal
-                modal.addEventListener('click', function(event) {
-                    if (event.target === modal) {
-                        closeModal();
-                    }
-                });
-
-                // Close modal function
-                window.closeModal = function() {
+                window.closeModal = function () {
                     document.body.removeChild(modal);
                 };
+
+                modal.addEventListener('click', function (event) {
+                    if (event.target === modal) closeModal();
+                });
             }
         });
 
         calendar.render();
     });
 </script>
-
-
-
 </body>
 </html>

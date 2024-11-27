@@ -40,15 +40,26 @@ class AppointmentController extends Controller
     public function store(Request $request)
     {
         
+        $request->validate([
+            'appointment_date' => ['required', 'date', 'after_or_equal:tomorrow'],
+            'appointment_time' => 'required|date_format:H:i',
+        ]);
+    
         Appointment::create($request->post());
  
-        return redirect()->route('appointment.index')->with('success','appointment has been created successfully.');
+        return redirect()->route('appointment.calendar')->with('success','appointment has been created successfully.');
     }
 
     public function showCalendar()
 {
     $appointments = Appointment::all(); // Assuming you have an Appointment model
-    return view('appointment.calendar', compact('appointments'));
+     // Fetch services from the service table
+     $services = Service::all(); 
+     // Fetch services from the hairdresser table
+     $hairdressers = Hairdresser::all(); 
+
+     // Pass services to the view
+    return view('appointment.calendar', compact('appointments','services','hairdressers'));
 }
 
  
