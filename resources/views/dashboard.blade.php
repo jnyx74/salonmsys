@@ -5,92 +5,102 @@
         </h2>
     </x-slot>
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Today's Appointments -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <h2 class="text-lg font-semibold text-gray-800 mb-4">Today's Appointments</h2>
-                        <div class="border-t border-gray-200">
-                            <ul class="divide-y divide-gray-200">
-                                <li class="py-3">
-                                    <div class="flex items-center justify-between">
-                                        <div class="text-sm font-medium text-gray-600">John Doe</div>
-                                        <div class="text-xs text-gray-400">10:00 AM</div>
-                                    </div>
-                                    <div class="text-xs text-gray-500">Haircut</div>
-                                </li>
-                                <li class="py-3">
-                                    <div class="flex items-center justify-between">
-                                        <div class="text-sm font-medium text-gray-600">Jane Smith</div>
-                                        <div class="text-xs text-gray-400">11:30 AM</div>
-                                    </div>
-                                    <div class="text-xs text-gray-500">Manicure</div>
-                                </li>
-                                <li class="py-3">
-                                    <div class="flex items-center justify-between">
-                                        <div class="text-sm font-medium text-gray-600">Sharon Bong</div>
-                                        <div class="text-xs text-gray-400">2:30 PM</div>
-                                    </div>
-                                    <div class="text-xs text-gray-500">Manicure</div>
-                                </li>
-                                <!-- Add more appointments as needed -->
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+    <style>
+    /* Quick CSS to visualize structure */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f6f9;
+    }
 
-                <!-- Recent Customers -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6">
-                        <h2 class="text-lg font-semibold text-gray-800 mb-4">Recent Customers</h2>
-                        <div class="border-t border-gray-200">
-                            <ul class="divide-y divide-gray-200">
-                                <li class="py-3">
-                                    <div class="flex items-center justify-between">
-                                        <div class="text-sm font-medium text-gray-600">Emily Brown</div>
-                                        <div class="text-xs text-gray-400">July 5, 2024</div>
-                                    </div>
-                                    <div class="text-xs text-gray-500">New customer</div>
-                                </li>
-                                <li class="py-3">
-                                    <div class="flex items-center justify-between">
-                                        <div class="text-sm font-medium text-gray-600">Michael Johnson</div>
-                                        <div class="text-xs text-gray-400">July 4, 2024</div>
-                                    </div>
-                                    <div class="text-xs text-gray-500">Returning customer</div>
-                                </li>
-                                <!-- Add more customers as needed -->
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+    .dashboard {
+      padding: 20px;
+    }
 
-                <!-- Popular Services -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg col-span-2">
-                    <div class="p-6">
-                        <h2 class="text-lg font-semibold text-gray-800 mb-4">Popular Services</h2>
-                        <div class="border-t border-gray-200">
-                            <ul class="divide-y divide-gray-200">
-                                <li class="py-3">
-                                    <div class="flex items-center justify-between">
-                                        <div class="text-sm font-medium text-gray-600">Haircut</div>
-                                        <div class="text-xs text-gray-400">45%</div>
-                                    </div>
-                                </li>
-                                <li class="py-3">
-                                    <div class="flex items-center justify-between">
-                                        <div class="text-sm font-medium text-gray-600">Manicure</div>
-                                        <div class="text-xs text-gray-400">30%</div>
-                                    </div>
-                                </li>
-                                <!-- Add more services as needed -->
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    .overview {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      flex: 1;
+      text-align: center;
+    }
+
+    .appointments {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .appointment-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .appointment-card img {
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      margin-bottom: 10px;
+    }
+
+    .view-details {
+      margin-top: 10px;
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #6c63ff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <div class="overview">
+      <div class="card">
+        <h3>Appointments</h3>
+        <p><strong>{{$total_appointment}}</strong> Today</p>
+      </div>
+      <div class="card">
+        <h3>Cancelled</h3>
+        <p><strong>{{$total_service}}</strong> Today</p>
+      </div>
+      <div class="card">
+        <h3>Service</h3>
+        <p><strong>{{$total_service}}</strong> in Total</p>
+      </div>
+      <div class="card">
+        <h3>Hairdresser</h3>
+        <p><strong>{{$total_hairdresser}}</strong>  in Total</p>
+      </div>
     </div>
+
+    <h2>Today's Appointments</h2>
+    <div class="appointments">
+        @forelse ($appointments as $appointment)
+            <div class="appointment-card">
+                <img src="https://i.pinimg.com/736x/18/1e/f2/181ef2b17916a4ac581b47b72295808f.jpg" alt="Profile">
+                <h4>{{ $appointment->name }}</h4>
+                <p>Appointment Date: {{ \Carbon\Carbon::parse($appointment->appointment_date)->format('F d, Y') }}</p>
+                <p>Time: {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }}</p>
+                <a href="#" class="view-details">View Details</a>
+            </div>
+        @empty
+            <p>No appointments for today.</p>
+        @endforelse
+    </div>
+  </div>
 </x-app-layout>
