@@ -70,5 +70,14 @@ class ServiceController extends Controller
         return redirect()->route('service.index')->with('success','Service has been deleted successfully');
     }
 
+    public function getServicePrice($id)
+    {
+        $service = Service::find($id); // Fetch the service by ID
+        if ($service) {
+            return response()->json(['price' => $service->service_category]); // Return the price as JSON
+        }
+        return response()->json(['error' => 'Service not found'], 404); // Return error if not found
+    }
+
   
 }

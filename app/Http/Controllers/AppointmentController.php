@@ -50,7 +50,7 @@ class AppointmentController extends Controller
         return redirect()->route('appointment.calendar')->with('success','appointment has been created successfully.');
     }
 
-    public function showCalendar()
+    public function showCalendar($id = null)
 {
     $appointments = Appointment::all(); // Assuming you have an Appointment model
      // Fetch services from the service table
@@ -116,6 +116,15 @@ class AppointmentController extends Controller
     {
         $appointment->delete();
         return redirect()->route('appointment.calendar')->with('success','appointment has been deleted successfully');
+    }
+
+    public function getServicePrice(Service $id)
+    {
+        $service = Service::find($id); // Fetch the service by ID
+        if ($service) {
+            return response()->json(['price' => $service->service_category]); // Return the price as JSON
+        }
+        return response()->json(['error' => 'Service not found'], 404); // Return error if not found
     }
 
 }

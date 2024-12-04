@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Appointment Calendar</title>
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
-<!-- Fonts -->
-<link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
 
-        <!-- Styles -->
-        <style>
+</head>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
+    <!-- Styles -->
+    <style>
            body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -264,6 +265,7 @@
         }
     }
         </style>
+        
 <body>
 <x-app-layout>
     <x-slot name="header">
@@ -291,7 +293,9 @@
     }
 
     // Fetch appointments
-    $sql = "SELECT id, name, appointment_date, appointment_time FROM appointments";
+    $sql = "SELECT a.id, a.name, a.appointment_date, a.appointment_time, a.service_id, a.status, s.service_name, s.service_category
+    FROM appointments a
+    JOIN services s ON a.service_id = s.id";
     $result = $conn->query($sql);
 
     $events = [];
@@ -301,7 +305,11 @@
                 'id' => $row['id'],
                 'title' => $row['name'],
                 'start' => $row['appointment_date'] . 'T' . $row['appointment_time'],
-                'allDay' => false
+                'status' => $row['status'],
+                'allDay' => false,
+                'service' => $row['service_name'],
+                'price' => $row['service_category']
+                
             ];
         }
     }
@@ -325,20 +333,20 @@
             dateClick: function (info) {
                 // Modal for creating new appointment
                // Get today's date and set time to midnight
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
 
-    // Get the clicked date
-    const clickedDate = new Date(info.dateStr);
-    
-    // Calculate the time difference in days
-    const timeDiff = clickedDate - today;
-    const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+            // Get the clicked date
+            const clickedDate = new Date(info.dateStr);
+            
+            // Calculate the time difference in days
+            const timeDiff = clickedDate - today;
+            const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
 
-    if (daysDiff < 1) {
-        alert("Appointments must be booked at least 1 day in advance.");
-        return; // Stop further execution
-    }
+            if (daysDiff < 1) {
+                alert("Appointments must be booked at least 1 day in advance.");
+                return; // Stop further execution
+            }
 
     // Rest of the modal creation logic
     var modal = document.createElement('div');
@@ -364,7 +372,13 @@
                 <input type="text" name="phone" required  style="width: 100%; margin-bottom: 10px; padding: 5px;">
                             <div class="form-group">
                                 <label for="status">Status</label>
-                                <input type="time" name="status" id="status" class="status" style="width:100%">
+                                <select name="status" id="status" class="form-control" style="width:100%">
+                                    <option value="" disabled selected>Select a status</option>
+                                    <option value="Waiting for Approval" selected>Waiting for Approval</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                </select>
                                 @error('status')<div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>@enderror
                             </div>
 
@@ -378,7 +392,10 @@
                                 </select>
                                 @error('service_id')<div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>@enderror
                             </div>
-
+                            <div class="form-group">
+                                <label for="service_category">Price</label>
+                                <input type="text" id="service_category" class="form-control" placeholder="Service price will appear here" readonly>
+                            </div>
                             <div class="form-group">
                                 <label for="hairdresser_id">Hairdresser Name</label>
                                 <select name="hairdresser_id" id="hairdresser_id" class="form-control" style="width:100%">
@@ -392,7 +409,7 @@
                             <input type="date" name="appointment_date" value="${info.dateStr}" readonly>
                             <label>Appointment Time:</label>
                             <input type="time" name="appointment_time" required>
-                            <button type="submit" class="btn" style="width: 100%; background-color: #4CAF50; color: white;">Save</button>
+                            <button type="submit" class="btn" style="width: 100%; background-color: #4CAF50; color: white;">Proceed with cash payment</button>
                         </form>
                         <button onclick="closeModal()" style="padding: 5px 10px; margin-top: 10px; width: 100%;">Cancel</button>
                     </div>
@@ -412,8 +429,12 @@
                 // Modal for viewing, editing, or deleting an appointment
                 var appointmentId = info.event.id;
                 var appointmentTitle = info.event.title;
+                var appointmentService = info.event.service ||'Not Available';
                 var appointmentDate = info.event.start.toISOString().split('T')[0];
                 var appointmentTime = info.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                var appointmentPrice = info.event.price||'Not Available';
+                var appointmentStatus = info.event.status||'Not Available';
+           
 
                 var modal = document.createElement('div');
                 modal.style.position = 'fixed';
@@ -432,8 +453,12 @@
                         <button class="close-modal" onclick="closeModal()">×</button>
                         <h3>Appointment Details</h3>
                         <p><strong>Title:</strong> ${appointmentTitle}</p>
+                        <p><strong>Service Name:</strong> ${appointmentService}</p>
                         <p><strong>Date:</strong> ${appointmentDate}</p>
                         <p><strong>Time:</strong> ${appointmentTime}</p>
+                        <p><strong>Price:</strong> RM ${appointmentPrice}</p>
+                        <p><strong>Satus:</strong> ${appointmentStatus}</p>
+        
                         <div class="modal-actions">
                             <a href="/appointment/edit/${appointmentId}">Edit</a>
                             <form action="/appointment/${appointmentId}" method="POST" style="display: inline;">
@@ -459,6 +484,31 @@
 
         calendar.render();
     });
+
+    $(document).ready(function () {
+        $('#service_id').on('change', function () {
+            let serviceId = $(this).val();
+            if (serviceId) {
+                $.ajax({
+                    url: `/get-service-price/${serviceId}`,
+                    type: 'GET',
+                    success: function (response) {
+                        if (response.price) {
+                            $('#service_category').val(response.price);
+                        } else {
+                            $('#service_category').val('Price not available');
+                        }
+                    },
+                    error: function () {
+                        $('#service_category').val('Error fetching price');
+                    }
+                });
+            } else {
+                $('#service_category').val('');
+            }
+        });
+    });
 </script>
+
 </body>
 </html>

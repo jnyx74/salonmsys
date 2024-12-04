@@ -185,7 +185,7 @@
                         <th>#</th>
                         <th>Service Name</th>
                         <th>Service Detail</th>
-                        <th>Service Category</th>
+                        <th>Service Price (RM)</th>
                         <th>Actions</th>
                     </tr>
                 </thead>

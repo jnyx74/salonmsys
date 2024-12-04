@@ -150,7 +150,12 @@
 
             <div class="form-group">
                 <label for="status">Status</label>
-                <input type="time" name="status" id="status" class="status" style="width:100%" value="{{ $appointment->status }}">
+                <select name="status" id="status" class="form-control" style="width:100%">
+                    <option value="" disabled>Select a status</option>
+                    <option value="In Progress" {{ $appointment->status == 'In Progress' ? 'selected' : '' }}>In Progress</option>
+                    <option value="Completed" {{ $appointment->status == 'Completed' ? 'selected' : '' }}>Completed</option>
+                    <option value="Cancelled" {{ $appointment->status == 'Cancelled' ? 'selected' : '' }}>Cancelled</option>
+                </select>
                 @error('status')
                     <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                 @enderror
@@ -158,33 +163,35 @@
 
             <div class="form-group">
                 <label for="service_id">Service Name</label>
-                <select name="service_id" id="service_id" class="form-control" style="width:100%" >
-                <option value="" disabled selected>Select a service</option>
+                <select name="service_id" id="service_id" class="form-control" style="width:100%">
+                    <option value="" disabled>Select a service</option>
                     @foreach($services as $service)
-                        <option value="{{ $service->id }}">{{ $service->service_name }}</option>
+                        <option value="{{ $service->id }}" {{ $appointment->service_id == $service->id ? 'selected' : '' }}>
+                            {{ $service->service_name }}
+                        </option>
                     @endforeach
                 </select>
-                @error('service_id')
-                    <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
-                @enderror
+            </div>
+            <div class="form-group">
+                <label for="service_category">Price</label>
+                <input type="text" id="service_category" class="form-control" placeholder="Service price will appear here" value="{{ $service->service_category }}"readonly>
             </div>
 
             <div class="form-group">
                 <label for="hairdresser_id">Hairdresser Name</label>
-                <select name="hairdresser_id" id="hairdresser_id" class="form-control" style="width:100%" >
-                <option value="" disabled selected>Select a hairdresser</option>
+                <select name="hairdresser_id" id="hairdresser_id" class="form-control" style="width:100%">
+                    <option value="" disabled>Select a hairdresser</option>
                     @foreach($hairdressers as $hairdresser)
-                        <option value="{{ $hairdresser->id }}">{{ $hairdresser->name }}</option>
-                    @endforeach 
+                        <option value="{{ $hairdresser->id }}" {{ $appointment->hairdresser_id == $hairdresser->id ? 'selected' : '' }}>
+                            {{ $hairdresser->name }}
+                        </option>
+                    @endforeach
                 </select>
-                @error('hairdresser_id')
-                    <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
-                @enderror
             </div>
 
             <div class="form-group">
                 <label for="appointment_date">Appointment Date</label>
-                <input type="date" name="appointment_date" id="appointment_date" class="appointment_date" style="width:100%">
+                <input type="date" name="appointment_date" id="appointment_date" class="appointment_date" style="width:100%" value="{{ $appointment->appointment_date }}">
                 @error('appointment_date')
                     <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                 @enderror
@@ -192,7 +199,7 @@
 
             <div class="form-group">
                 <label for="appointment_time">Appointment Time</label>
-                <input type="time" name="appointment_time" id="appointment_time" class="appointment_time" style="width:100%" >
+                <input type="time" name="appointment_time" id="appointment_time" class="appointment_time" style="width:100%" value="{{ $appointment->appointment_time }}">
                 @error('appointment_time')
                     <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                 @enderror
@@ -205,4 +212,30 @@
     </div>
     </x-app-layout>
     </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#service_id').on('change', function () {
+            let serviceId = $(this).val();
+            if (serviceId) {
+                $.ajax({
+                    url: `/get-service-price/${serviceId}`,
+                    type: 'GET',
+                    success: function (response) {
+                        if (response.price) {
+                            $('#service_category').val(response.price);
+                        } else {
+                            $('#service_category').val('Price not available');
+                        }
+                    },
+                    error: function () {
+                        $('#service_category').val('Error fetching price');
+                    }
+                });
+            } else {
+                $('#service_category').val('');
+            }
+        });
+    });
+</script>
 </html>

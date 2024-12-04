@@ -148,7 +148,7 @@
             </div>
 
             <div class="form-group">
-                <strong>Service category:</strong>
+                <strong>Service price:</strong>
                     <input type="text" name="service_category" id="service_category"  class="form-control" value="{{ $service->service_category }}" style="width:100%">
                         @error('service_category')
                         <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>

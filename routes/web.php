@@ -39,6 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/service/edit/{id}', [ServiceController::class, 'edit'])->name('service.edit');
     Route::put('/service/update/{id}', [ServiceController::class, 'update'])->name('service.update');
     Route::delete('/service/{service}', [ServiceController::class, 'destroy'])->name('service.destroy');
+    Route::get('/get-service-price/{id}', [ServiceController::class, 'getServicePrice'])->name('getServicePrice');
     // Route to display the hairdresser creation form
     Route::get('/hairdresser/create', [HairdresserController::class, 'create'])->name('hairdresser.create');
     Route::get('/hairdresser/index', [HairdresserController::class, 'index'])->name('hairdresser.index');
@@ -54,6 +55,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/appointment/store', [AppointmentController::class, 'store'])->name('appointment.store');
     Route::get('/appointment/calendar', [AppointmentController::class, 'showCalendar'])->name('appointment.calendar');
     Route::delete('/appointment/{appointment}', [AppointmentController::class, 'destroy'])->name('appointment.destroy');
+    Route::get('/get-service-price/{id}', [AppointmentController::class, 'getServicePrice'])->name('getServicePrice');
     // Profile management routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

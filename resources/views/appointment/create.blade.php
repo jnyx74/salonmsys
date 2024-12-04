@@ -149,7 +149,13 @@
 
             <div class="form-group">
                 <label for="status">Status</label>
-                <input type="time" name="status" id="status" class="status" style="width:100%">
+                <select name="status" id="status" class="form-control" style="width:100%">
+                    <option value="" disabled selected>Select a status</option>
+                    <option value="Waiting for Approval" selected>Waiting for Approval</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
                 @error('status')
                     <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                 @enderror
@@ -166,6 +172,11 @@
                 @error('service_id')
                     <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                 @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="service_category">Price</label>
+                <input type="text" id="service_category" class="form-control" placeholder="Service price will appear here" readonly>
             </div>
 
             <div class="form-group">
@@ -198,10 +209,36 @@
             </div>
 
             <div class="form-group">
-                <button class="btn" type="submit">Submit</button>
+                <button class="btn" type="submit">Proceed with cash payment</button>
             </div>
         </form>
     </div>
     </x-app-layout>
     </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#service_id').on('change', function () {
+            let serviceId = $(this).val();
+            if (serviceId) {
+                $.ajax({
+                    url: `/get-service-price/${serviceId}`,
+                    type: 'GET',
+                    success: function (response) {
+                        if (response.price) {
+                            $('#service_category').val(response.price);
+                        } else {
+                            $('#service_category').val('Price not available');
+                        }
+                    },
+                    error: function () {
+                        $('#service_category').val('Error fetching price');
+                    }
+                });
+            } else {
+                $('#service_category').val('');
+            }
+        });
+    });
+</script>
 </html>
