@@ -150,11 +150,7 @@
             <div class="form-group">
                 <label for="status">Status</label>
                 <select name="status" id="status" class="form-control" style="width:100%">
-                    <option value="" disabled selected>Select a status</option>
-                    <option value="Waiting for Approval" selected>Waiting for Approval</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Cancelled">Cancelled</option>
+                    <option value="In Progress" selected readonly>In Progress</option>
                 </select>
                 @error('status')
                     <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
@@ -218,27 +214,55 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('#service_id').on('change', function () {
-            let serviceId = $(this).val();
-            if (serviceId) {
-                $.ajax({
-                    url: `/get-service-price/${serviceId}`,
-                    type: 'GET',
-                    success: function (response) {
-                        if (response.price) {
-                            $('#service_category').val(response.price);
-                        } else {
-                            $('#service_category').val('Price not available');
-                        }
-                    },
-                    error: function () {
-                        $('#service_category').val('Error fetching price');
+    $('#service_id').on('change', function () {
+        let serviceId = $(this).val();
+        if (serviceId) {
+            $.ajax({
+                url: "{{ url('get-service-price') }}/" + serviceId,
+                type: 'GET',
+                success: function (response) {
+                    if (response.price) {
+                        $('#service_category').val(response.price);
+                    } else {
+                        $('#service_category').val('Price not available');
                     }
-                });
-            } else {
-                $('#service_category').val('');
-            }
-        });
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                    $('#service_category').val('Error fetching price');
+                }
+            });
+        } else {
+            $('#service_category').val('');
+        }
     });
+});
+
+$(document).ready(function () {
+    $('#appointment_date, #hairdresser_id').on('change', function () {
+        const hairdresserId = $('#hairdresser_id').val();
+        const appointmentDate = $('#appointment_date').val();
+
+        if (hairdresserId && appointmentDate) {
+            $.ajax({
+                url: "{{ url('check-hairdresser-availability') }}",
+                type: 'GET',
+                data: {
+                    hairdresser_id: hairdresserId,
+                    appointment_date: appointmentDate
+                },
+                success: function (response) {
+                    if (!response.available) {
+                        alert('This hairdresser is already booked for the selected date.');
+                        $('#hairdresser_id').val('');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                }
+            });
+        }
+    });
+});
 </script>
 </html>

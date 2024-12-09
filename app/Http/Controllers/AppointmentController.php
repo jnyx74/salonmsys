@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use App\Models\Service;
 use App\Models\Hairdresser;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AppointmentController extends Controller
 {
     public function index()
     {
         $appointments = Appointment::orderBy('id','asc')->paginate(10);
+
         return view('appointment.index', compact('appointments'));
     }
  
@@ -41,6 +44,19 @@ class AppointmentController extends Controller
     {
         
         $request->validate([
+            'hairdresser_id' => [
+                'required',
+                Rule::exists('hairdressers', 'id'),
+                function ($attribute, $value, $fail) use ($request) {
+                    $exists = DB::table('appointments')
+                        ->where('hairdresser_id', $value)
+                        ->where('appointment_date', $request->appointment_date)
+                        ->exists();
+                    if ($exists) {
+                        $fail('This hairdresser is already booked for the selected date.');
+                    }
+                },
+            ],
             'appointment_date' => ['required', 'date', 'after_or_equal:tomorrow'],
             'appointment_time' => 'required|date_format:H:i',
         ]);
@@ -118,14 +134,36 @@ class AppointmentController extends Controller
         return redirect()->route('appointment.calendar')->with('success','appointment has been deleted successfully');
     }
 
-    public function getServicePrice(Service $id)
-    {
-        $service = Service::find($id); // Fetch the service by ID
-        if ($service) {
-            return response()->json(['price' => $service->service_category]); // Return the price as JSON
-        }
-        return response()->json(['error' => 'Service not found'], 404); // Return error if not found
+
+    public function getServicePrice($id)
+{
+    $service = Service::find($id);
+    if ($service) {
+        return response()->json(['price' => $service->service_category]);
+    } else {
+        return response()->json(['price' => null]);
     }
+}
+
+
+public function checkAvailability(Request $request)
+{
+    $available = !DB::table('appointments')
+        ->where('hairdresser_id', $request->hairdresser_id)
+        ->where('appointment_date', $request->appointment_date)
+        ->exists();
+
+    return response()->json(['available' => $available]);
+}
+
+public function updateStatus(Request $request, $id)
+{
+    $appointment = Appointment::findOrFail($id);
+    $appointment->status = $request->status;
+    $appointment->save();
+
+    return redirect()->route('dashboard')->with('success', 'Appointment status updated successfully!');
+}
 
 }
 

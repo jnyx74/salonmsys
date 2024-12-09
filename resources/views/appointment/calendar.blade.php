@@ -293,10 +293,16 @@
     }
 
     // Fetch appointments
-    $sql = "SELECT a.id, a.name, a.appointment_date, a.appointment_time, a.service_id, a.status, s.service_name, s.service_category
+    $sql = "SELECT a.id, a.name, a.appointment_date, a.appointment_time, a.service_id, a.status, a.hairdresser_id,
+    s.service_name, s.service_category, h.name AS hairdresser_name
     FROM appointments a
-    JOIN services s ON a.service_id = s.id";
-    $result = $conn->query($sql);
+    LEFT JOIN services s ON a.service_id = s.id
+    LEFT JOIN hairdressers h ON a.hairdresser_id = h.id";
+      $result = $conn->query($sql);
+
+      if (!$result) {
+        die("SQL Error: " . $conn->error);
+    }
 
     $events = [];
     if ($result->num_rows > 0) {
@@ -306,9 +312,10 @@
                 'title' => $row['name'],
                 'start' => $row['appointment_date'] . 'T' . $row['appointment_time'],
                 'status' => $row['status'],
-                'allDay' => false,
                 'service' => $row['service_name'],
-                'price' => $row['service_category']
+                'price' => $row['service_id'],
+                'allDay' => false
+                
                 
             ];
         }
@@ -370,17 +377,15 @@
                 <input type="text" name="name" required style="width: 100%; margin-bottom: 10px; padding: 5px;">
                 <label>Phone:</label>
                 <input type="text" name="phone" required  style="width: 100%; margin-bottom: 10px; padding: 5px;">
-                            <div class="form-group">
-                                <label for="status">Status</label>
-                                <select name="status" id="status" class="form-control" style="width:100%">
-                                    <option value="" disabled selected>Select a status</option>
-                                    <option value="Waiting for Approval" selected>Waiting for Approval</option>
-                                    <option value="In Progress">In Progress</option>
-                                    <option value="Completed">Completed</option>
-                                    <option value="Cancelled">Cancelled</option>
-                                </select>
-                                @error('status')<div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>@enderror
-                            </div>
+                <div class="form-group">
+                <label for="status">Status</label>
+                <select name="status" id="status" class="form-control" style="width:100%">
+                    <option value="In Progress" selected readonly>In Progress</option>
+                </select>
+                @error('status')
+                    <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                @enderror
+            </div>
 
                             <div class="form-group">
                                 <label for="service_id">Service Name</label>
@@ -434,6 +439,7 @@
                 var appointmentTime = info.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 var appointmentPrice = info.event.price||'Not Available';
                 var appointmentStatus = info.event.status||'Not Available';
+                var appointmentHairdresser = info.event.hairdresser||'Not Available';
            
 
                 var modal = document.createElement('div');
@@ -454,6 +460,7 @@
                         <h3>Appointment Details</h3>
                         <p><strong>Title:</strong> ${appointmentTitle}</p>
                         <p><strong>Service Name:</strong> ${appointmentService}</p>
+                        <p><strong>Hairdresser Name:</strong> ${appointmentHairdresser}</p>
                         <p><strong>Date:</strong> ${appointmentDate}</p>
                         <p><strong>Time:</strong> ${appointmentTime}</p>
                         <p><strong>Price:</strong> RM ${appointmentPrice}</p>
