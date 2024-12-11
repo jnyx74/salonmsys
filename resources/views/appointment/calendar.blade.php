@@ -313,7 +313,8 @@
                 'start' => $row['appointment_date'] . 'T' . $row['appointment_time'],
                 'status' => $row['status'],
                 'service' => $row['service_name'],
-                'price' => $row['service_id'],
+                'hairdresser' => $row['hairdresser_name'],
+                'price' => $row['service_category'],
                 'allDay' => false
                 
                 
@@ -434,12 +435,12 @@
                 // Modal for viewing, editing, or deleting an appointment
                 var appointmentId = info.event.id;
                 var appointmentTitle = info.event.title;
-                var appointmentService = info.event.service ||'Not Available';
+                var appointmentService = info.event.extendedProps.service || 'Not Available';
                 var appointmentDate = info.event.start.toISOString().split('T')[0];
                 var appointmentTime = info.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                var appointmentPrice = info.event.price||'Not Available';
-                var appointmentStatus = info.event.status||'Not Available';
-                var appointmentHairdresser = info.event.hairdresser||'Not Available';
+                var appointmentPrice = info.event.extendedProps.price||'Not Available';
+                var appointmentStatus = info.event.extendedProps.status||'Not Available';
+                var appointmentHairdresser = info.event.extendedProps.hairdresser||'Not Available';
            
 
                 var modal = document.createElement('div');
@@ -458,7 +459,7 @@
                     <div class="modal-content">
                         <button class="close-modal" onclick="closeModal()">×</button>
                         <h3>Appointment Details</h3>
-                        <p><strong>Title:</strong> ${appointmentTitle}</p>
+                        <p><strong>Customer Name:</strong> ${appointmentTitle}</p>
                         <p><strong>Service Name:</strong> ${appointmentService}</p>
                         <p><strong>Hairdresser Name:</strong> ${appointmentHairdresser}</p>
                         <p><strong>Date:</strong> ${appointmentDate}</p>
