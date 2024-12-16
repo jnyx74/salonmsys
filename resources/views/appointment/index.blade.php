@@ -173,7 +173,7 @@
             <!-- appointment Buttons -->
             <div class="appointment-buttons">
                 <a href="{{ route('appointment.create') }}" class="btn">New Appointment</a>
-             
+                <a href="{{ route('appointment.report') }}" class="btn">View Report</a>
             </div>
 
             <!-- appointment Table -->
@@ -185,6 +185,7 @@
                         <th>Customer Phone</th>
                         <th>Appointment Date</th>
                         <th>Appointment Time</th>
+                        <th>Price</th>
                         <th>Created</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -198,6 +199,7 @@
                             <td>{{ $appointment->phone }}</td>
                             <td>{{ $appointment->appointment_date }}</td>
                             <td>{{ $appointment->appointment_time }}</td>
+                            <td>{{ $appointment->service->service_category ?? 'N/A' }}</td>
                             <td>{{ $appointment->created_at }}</td>
                             <td>{{ $appointment->status }}</td>
                             <td>

@@ -26,6 +26,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect('/login'); // Redirect to login page or any other page
+})->name('logout');
+
 
 Route::get('/aboutus', function () {
     return view('aboutus');
@@ -59,6 +64,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/appointment/{appointment}', [AppointmentController::class, 'destroy'])->name('appointment.destroy');
     Route::get('/get-service-price/{id}', [AppointmentController::class, 'getServicePrice'])->name('getServicePrice');
     Route::put('/appointments/{id}/update-status', [AppointmentController::class, 'updateStatus'])->name('appointments.updateStatus');
+    Route::get('/appointment/report', [AppointmentController::class, 'report'])->name('appointment.report');
+
+
     // Profile management routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -16,6 +16,7 @@ class Appointment extends Model
         'appointment_date',
         'appointment_time',
         'status',
+        'user_id'
     ];
 
     // Define the relationship with services
@@ -29,5 +30,11 @@ class Appointment extends Model
     {
         return $this->belongsTo(Hairdresser::class, 'hairdresser_id');
     }
+
+    public function user()
+{
+    return $this->belongsTo(User::class);
+}
+
 }
 

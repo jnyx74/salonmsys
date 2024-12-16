@@ -91,6 +91,7 @@
                 <h3>Incoming Appointments</h3>
                 <p><strong>{{$total_incoming_appointments}}</strong> in Total</p>
             </div>
+            @if(auth()->user()->role != 'customer')
             <div class="card">
                 <h3>Cancelled</h3>
                 <p><strong>{{$total_cancelled}}</strong> in Total</p>
@@ -103,6 +104,7 @@
                 <h3>Hairdresser</h3>
                 <p><strong>{{$total_hairdresser}}</strong> in Total</p>
             </div>
+            @endif
         </div>
 
         <!-- Today's Appointments Section -->
@@ -117,7 +119,7 @@
                     <th>Appointment Date</th>
                     <th>Time</th>
                     <th>Created Date</th>
-                    <th>Action</th>
+                    @if(auth()->user()->role != 'customer')<th>Action</th>@endif
                 </tr>
             </thead>
             <tbody>
@@ -130,6 +132,7 @@
                         <td>{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('F d, Y') }}</td>
                         <td>{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }}</td>
                         <td>{{ $appointment->created_at }}</td>
+                        @if(auth()->user()->role != 'customer')
                         <td>
                           <!-- Display Icon and Color based on Status -->
                           <form action="{{ route('appointments.updateStatus', $appointment->id) }}" method="POST" style="display: inline;">
@@ -153,6 +156,7 @@
                                   ($appointment->status == 'Cancelled' ? 'fa-times-circle' : 'fa-question-circle')) }}"></i>
                           </span>
                       </td>
+                      @endif
                     </tr>
                 @empty
                     <tr>
@@ -174,7 +178,7 @@
                     <th>Appointment Date</th>
                     <th>Time</th>
                     <th>Created Date</th>
-                    <th>Action</th>
+                    @if(auth()->user()->role != 'customer')<th>Action</th>@endif
                 </tr>
             </thead>
             <tbody>
@@ -187,7 +191,7 @@
                         <td>{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('F d, Y') }}</td>
                         <td>{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }}</td>
                         <td>{{ $appointment->created_at }}</td>
-                        <td>
+                        @if(auth()->user()->role != 'customer') <td>
                           <!-- Display Icon and Color based on Status -->
                           <form action="{{ route('appointments.updateStatus', $appointment->id) }}" method="POST" style="display: inline;">
                               @csrf
@@ -210,6 +214,7 @@
                                   ($appointment->status == 'Cancelled' ? 'fa-times-circle' : 'fa-question-circle')) }}"></i>
                           </span>
                       </td>
+                      @endif
                     </tr>
                 @empty
                     <tr>

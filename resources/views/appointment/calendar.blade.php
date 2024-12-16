@@ -376,6 +376,7 @@
                 @csrf
                 <label>Name:</label>
                 <input type="text" name="name" required style="width: 100%; margin-bottom: 10px; padding: 5px;">
+                <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                 <label>Phone:</label>
                 <input type="text" name="phone" required  style="width: 100%; margin-bottom: 10px; padding: 5px;">
                 <div class="form-group">

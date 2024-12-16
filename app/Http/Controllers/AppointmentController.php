@@ -12,7 +12,9 @@ class AppointmentController extends Controller
 {
     public function index()
     {
-        $appointments = Appointment::orderBy('id','asc')->paginate(10);
+        $appointments = Appointment::with('service') // Eager load service
+        ->orderBy('id', 'asc')
+        ->paginate(100000);
 
         return view('appointment.index', compact('appointments'));
     }
@@ -61,9 +63,12 @@ class AppointmentController extends Controller
             'appointment_time' => 'required|date_format:H:i',
         ]);
     
+        // Associating the logged-in user with the appointment
+        $request->merge(['user_id' => auth()->id()]);
+    
         Appointment::create($request->post());
- 
-        return redirect()->route('appointment.calendar')->with('success','appointment has been created successfully.');
+    
+        return redirect()->route('appointment.calendar')->with('success', 'Appointment has been created successfully.');
     }
 
     public function showCalendar($id = null)
@@ -163,6 +168,42 @@ public function updateStatus(Request $request, $id)
     $appointment->save();
 
     return redirect()->route('dashboard')->with('success', 'Appointment status updated successfully!');
+}
+
+public function report(Request $request)
+{
+    // Get the date range from the request
+    $startDate = $request->input('start_date');
+    $endDate = $request->input('end_date');
+
+    // If no date range is provided, use default values
+    if (!$startDate || !$endDate) {
+        $startDate = now()->startOfMonth()->format('Y-m-d'); // Default to start of the month
+        $endDate = now()->endOfMonth()->format('Y-m-d');     // Default to end of the month
+    }
+
+    // Query totals within the date range
+    $dailyTotal = DB::table('appointments')
+    ->join('services', 'appointments.service_id', '=', 'services.id')
+        ->whereBetween('appointments.appointment_date', [$startDate, $endDate])
+        ->whereDate('appointments.appointment_date', today())
+        ->sum('services.service_category');
+
+    $monthlyTotal = DB::table('appointments')
+    ->join('services', 'appointments.service_id', '=', 'services.id')
+        ->whereBetween('appointments.appointment_date', [$startDate, $endDate])
+        ->whereMonth('appointments.appointment_date', now()->month)
+        ->sum('services.service_category');
+
+    $yearlyTotal = DB::table('appointments')
+    ->join('services', 'appointments.service_id', '=', 'services.id')
+        ->whereBetween('appointments.appointment_date', [$startDate, $endDate])
+        ->whereYear('appointments.appointment_date', now()->year)
+        ->sum('services.service_category');
+
+    $overallTotal = $dailyTotal + $monthlyTotal + $yearlyTotal;
+
+    return view('appointment.report', compact('dailyTotal', 'monthlyTotal', 'yearlyTotal', 'overallTotal', 'startDate', 'endDate'));
 }
 
 }

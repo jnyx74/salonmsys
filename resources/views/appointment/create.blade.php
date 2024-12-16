@@ -134,6 +134,7 @@
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" name="name" id="name" class="form-control" style="width:100%">
+                <input type="hidden" name="user_id" value="{{ Auth::id() }}">
                         @error('name')
                         <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                         @enderror
