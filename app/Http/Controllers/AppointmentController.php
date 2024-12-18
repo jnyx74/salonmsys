@@ -53,16 +53,16 @@ class AppointmentController extends Controller
                     $exists = DB::table('appointments')
                         ->where('hairdresser_id', $value)
                         ->where('appointment_date', $request->appointment_date)
+                        ->where('appointment_time', $request->appointment_time)
                         ->exists();
                     if ($exists) {
-                        $fail('This hairdresser is already booked for the selected date.');
+                        $fail('This hairdresser is already booked for the selected date and time.');
                     }
                 },
             ],
             'appointment_date' => ['required', 'date', 'after_or_equal:tomorrow'],
             'appointment_time' => 'required|date_format:H:i',
         ]);
-    
         // Associating the logged-in user with the appointment
         $request->merge(['user_id' => auth()->id()]);
     
