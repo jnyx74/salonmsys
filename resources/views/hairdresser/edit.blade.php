@@ -166,11 +166,11 @@
             </div>
 
             <div class="form-group">
-                <label for="hairdresser">Job description</label>
-                    <textarea type="text" name="job_description" id="job_description" class="form-control" style="width:100%" value="{{ $hairdresser->job_description }}"></textarea>
-                            @error('job_description')
-                            <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
-                            @enderror
+                <label for="job_description">Job description</label>
+                <textarea name="job_description" id="job_description" class="form-control" style="width:100%">{{ $hairdresser->job_description }}</textarea>
+                @error('job_description')
+                    <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="form-group">

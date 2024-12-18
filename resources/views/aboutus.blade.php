@@ -1,128 +1,129 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="en">
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>JJ Beauty Salon</title>
-
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
 
         <!-- Styles -->
         <style>
-           body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9f1;
-        }
-        
-        .banner {
-            position: relative;
-            text-align: center;
-            color: white;
-        }
-        .section {
-            position: relative;
-            text-align: center;
-            color: black;
-        }
-        .banner img {
-            width: 100%;
-            height: 30%;
-        }
-        .banner .content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        .banner h1 {
-            font-size: 3rem;
-            margin: 0;
-        }
-        .banner p {
-            font-size: 1.25rem;
-        }
-        .banner .buttons {
-            margin-top: 20px;
-        }
-        .banner .buttons a {
-            text-decoration: none;
-            color: white;
-            background-color: red;
-            padding: 10px 20px;
-            margin: 0 10px;
-            border-radius: 5px;
-        }
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f8f9f1;
+                color: #333;
+            }
 
-        .about-us-section {
-            padding: 50px;
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .about-us-section h2 {
-            font-size: 36px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .about-us-section hr {
-            width: 50px;
-            border: 2px solid #ffc107;
-            margin: 20px auto;
-        }
-        .about-us-section .content h3,
-        .about-us-section .content h4 {
-            font-size: 24px;
-            font-weight: bold;
-            color: #212529;
-            margin-top: 30px;
-        }
-        .about-us-section .content p {
-            font-size: 16px;
-            color: #6c757d;
-            margin: 10px 0;
-            line-height: 1.8;
-        }
-        .action-button a {
-            text-decoration: none;
-            color: white;
-            background-color: #007bff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: bold;
-        }
+            /* Container Styling */
+            .box-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 20px; /* Spacing between boxes */
+                padding: 50px 20px;
+                flex-wrap: wrap;
+            }
+
+            /* Individual Box Styling */
+            .box {
+                flex: 1;
+                max-width: 300px;
+                background-color: #fff;
+                text-align: center;
+                padding: 20px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                border-radius: 10px;
+                transition: transform 0.3s, box-shadow 0.3s;
+            }
+
+            .box:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            /* Icons and Title Styling */
+            .box img {
+                width: 60px;
+                height: auto;
+                margin-bottom: 15px;
+            }
+
+            .box h3 {
+                font-size: 1.5rem;
+                color: #dc3545; /* Red Title */
+                margin: 10px 0;
+            }
+
+            .box p {
+                font-size: 1rem;
+                color: #6c757d;
+                line-height: 1.5;
+                text-align: justify;
+
+            }
+            .action-button a {
+                text-align: center;
+                text-decoration: none;
+                color: white;
+                background-color: #28a745; /* Bootstrap Success Green */
+                padding: 10px 20px;
+                border-radius: 5px;
+                font-weight: bold;
+                transition: background-color 0.3s, transform 0.2s;
+            }
+
+            .action-button a:hover {
+                background-color: #218838; /* Darker Green */
+                transform: scale(1.05);
+            }
+
+            /* Responsive Design */
+            @media (max-width: 768px) {
+                .box-container {
+                    flex-direction: column;
+                }
+            }
         </style>
     </head>
     <body>
-    <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('About Us') }}
-        </h2>
-    </x-slot>
-        
+        <x-app-layout>
+            <x-slot name="header">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    {{ __('About Us') }}
+                </h2>
+            </x-slot>
 
-        <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-            <div class="about-us-section text-center">
-               
-                <div class="content">
+            <!-- Boxes Section -->
+            <div class="box-container">
+                <!-- Box 1 -->
+                <div class="box">
+                    <img src="https://cdn-icons-png.flaticon.com/512/154/154017.png" alt="Business Icon">
                     <h3>For Your Business</h3>
-                    <p>An all-in-one solution for your businesses, offering a comprehensive range of business management services such as online booking and point-of-sale transactions.</p>
-                    
-                    <h4>Appointment Feature</h4>
+                    <p>An all-in-one solution for your businesses, offering a comprehensive range of business management services such as online booking.</p>
+                </div>
+
+                <!-- Box 2 -->
+                <div class="box" style="background-color: #cee2ce; color: #fff;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2331/2331970.png" alt="Appointment Icon">
+                    <h3>Appointment Feature</h3>
                     <p>We help you manage the large daily customer traffic, improving your appointment efficiency and reducing communication costs.</p>
-                    
-                    <h4>Inventory Consumption Management</h4>
-                    <p>We solve the issue of associated product consumption. When serving customers, you no longer need to manually deduct consumables. The software automatically deducts associated consumables, enhancing store operational efficiency and reducing labor costs.</p>
                 </div>
-                <div class="action-button mt-4">
-                    <a href="{{route ('service.index') }}" class="btn btn-primary">Pick Salon</a>
+
+                <!-- Box 3 -->
+                <div class="box">
+                    <img src="https://cdn-icons-png.flaticon.com/512/684/684831.png" alt="Inventory Icon">
+                    <h3>Inventory Management</h3>
+                    <p>Automatically deduct consumables during service, improving efficiency and reducing manual work and speedly completed the tasks.</p>
                 </div>
+                
+        </x-app-layout>
+       
             </div>
-        </div>
-    </x-app-layout>
+            
+            
     </body>
 </html>
