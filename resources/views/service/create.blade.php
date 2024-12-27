@@ -142,7 +142,7 @@
 
             <div class="form-group">
                 <strong>Service detail:</strong>
-                    <input type="text" name="service_detail" id="service_detail" class="form-control" placeholder="Service Name" style="width:100%">
+                    <input type="text" name="service_detail" id="service_detail" class="form-control" placeholder="Service detail" style="width:100%">
                         @error('service_detail')
                         <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                         @enderror
@@ -150,7 +150,7 @@
 
             <div class="form-group">
                 <strong>Service price:</strong>
-                    <input type="text" name="service_category" id="service_category"  class="form-control" placeholder="Service Name" style="width:100%">
+                    <input type="text" name="service_category" id="service_category"  class="form-control" placeholder="Service price" style="width:100%">
                         @error('service_category')
                         <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                         @enderror
