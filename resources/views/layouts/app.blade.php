@@ -47,6 +47,7 @@
                         @if (auth()->check() && auth()->user()->role != 'customer')
                         <a href="{{ route('service.index') }}" class="profile font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-800 dark:hover:text-white">Service</a>
                         <a href="{{ route('hairdresser.index') }}" class="profile font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-800 dark:hover:text-white">Hairdresser</a>
+                        <a href="{{ route('appointment.report') }}" class="profile font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-800 dark:hover:text-white">Report</a>
                         @endif<a href="{{ route('appointment.calendar') }}" class="profile font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-800 dark:hover:text-white">Appointment</a>
                         
                         <!-- <a href="#" class="profile font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-800 dark:hover:text-white">Cart</a> -->

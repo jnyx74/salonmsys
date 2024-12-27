@@ -170,7 +170,7 @@ public function updateStatus(Request $request, $id)
     return redirect()->route('dashboard')->with('success', 'Appointment status updated successfully!');
 }
 
-public function report(Request $request)
+public function report(Request $request) 
 {
     // Get the date range from the request
     $startDate = $request->input('start_date');
@@ -183,28 +183,49 @@ public function report(Request $request)
     }
 
     // Query totals within the date range
-    $dailyTotal = DB::table('appointments')
-    ->join('services', 'appointments.service_id', '=', 'services.id')
+    $dailyTotalPrice = DB::table('appointments')
+        ->join('services', 'appointments.service_id', '=', 'services.id')
         ->whereBetween('appointments.appointment_date', [$startDate, $endDate])
         ->whereDate('appointments.appointment_date', today())
         ->sum('services.service_category');
 
-    $monthlyTotal = DB::table('appointments')
-    ->join('services', 'appointments.service_id', '=', 'services.id')
+    $monthlyTotalPrice = DB::table('appointments')
+        ->join('services', 'appointments.service_id', '=', 'services.id')
         ->whereBetween('appointments.appointment_date', [$startDate, $endDate])
         ->whereMonth('appointments.appointment_date', now()->month)
         ->sum('services.service_category');
 
-    $yearlyTotal = DB::table('appointments')
-    ->join('services', 'appointments.service_id', '=', 'services.id')
+    $yearlyTotalPrice = DB::table('appointments')
+        ->join('services', 'appointments.service_id', '=', 'services.id')
         ->whereBetween('appointments.appointment_date', [$startDate, $endDate])
         ->whereYear('appointments.appointment_date', now()->year)
         ->sum('services.service_category');
 
-    $overallTotal = $dailyTotal + $monthlyTotal + $yearlyTotal;
+    $overallTotalPrice = $dailyTotalPrice + $monthlyTotalPrice + $yearlyTotalPrice;
 
-    return view('appointment.report', compact('dailyTotal', 'monthlyTotal', 'yearlyTotal', 'overallTotal', 'startDate', 'endDate'));
+    // Query counts within the date range
+    $dailyTotalRecords = DB::table('appointments')
+        ->whereBetween('appointment_date', [$startDate, $endDate])
+        ->whereDate('appointment_date', today())
+        ->count();
+
+    $monthlyTotalRecords = DB::table('appointments')
+        ->whereBetween('appointment_date', [$startDate, $endDate])
+        ->whereMonth('appointment_date', now()->month)
+        ->count();
+
+    $yearlyTotalRecords = DB::table('appointments')
+        ->whereBetween('appointment_date', [$startDate, $endDate])
+        ->whereYear('appointment_date', now()->year)
+        ->count();
+
+    $overallTotalRecords = $dailyTotalRecords + $monthlyTotalRecords + $yearlyTotalRecords;
+
+    return view('appointment.report', compact(
+        'dailyTotalPrice', 'monthlyTotalPrice', 'yearlyTotalPrice', 'overallTotalPrice',
+        'dailyTotalRecords', 'monthlyTotalRecords', 'yearlyTotalRecords', 'overallTotalRecords',
+        'startDate', 'endDate'
+    ));
 }
-
 }
 

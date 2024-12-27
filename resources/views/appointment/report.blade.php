@@ -9,97 +9,124 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Figtree', Arial, sans-serif;
             background-color: #f4f4f9;
             margin: 0;
             padding: 0;
         }
-   
-      
+        
         .filter-form {
-            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            margin: 20px auto;
+            padding: 15px;
+            max-width: 800px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
+        
+        .filter-form label {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
         .filter-form input {
             padding: 10px;
-            margin-right: 10px;
             font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            outline: none;
         }
+        
         .filter-form button {
-            padding: 10px 15px;
+            padding: 10px 20px;
             font-size: 14px;
             background-color: #007bff;
             color: white;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
+        
         .filter-form button:hover {
             background-color: #0056b3;
         }
         
         .report-banner {
-                position: relative;
-                width: 100%;
-                height: 300px;
-                background: url('image/report.jpg') no-repeat center center/cover;
-                text-align: center;
-                color: white;
-            }
+            position: relative;
+            width: 100%;
+            height: 300px;
+            background: url('image/report.jpg') no-repeat center center/cover;
+            text-align: center;
+            color: white;
+        }
 
-            .report-banner .banner-content {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background-color: rgba(0, 0, 0, 0.7);
-                padding: 20px 40px;
-                border-radius: 5px;
-            }
+        .report-banner .banner-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px 40px;
+            border-radius: 5px;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        }
 
-            .report-banner h1 {
-                font-size: 36px;
-                margin: 0;
-            }
+        .report-banner h1 {
+            font-size: 36px;
+            margin: 0;
+        }
 
-            .report-container {
-                padding: 20px;
-                background-color: #fff;
-                margin: 20px;
-                border-radius: 10px;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            }
+        .report-container {
+            padding: 20px;
+            background-color: #fff;
+            margin: 20px auto;
+            max-width: 1000px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
 
-            h2 {
-                text-align: center;
-                margin-bottom: 20px;
-            }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
 
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin: 20px 0;
-            }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
 
-            table th, table td {
-                padding: 10px;
-                text-align: left;
-                border-bottom: 1px solid #ddd;
-            }
+        table th, table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
 
-            table th {
-                background-color: #f4f4f4;
-                font-weight: bold;
-            }
+        table th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
 
-            table tbody tr:nth-child(even) {
-                background-color: #f9f9f9;
-            }
+        table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
 
-            .summary {
-                margin-top: 20px;
-                text-align: center;
-                font-size: 18px;
-                font-weight: bold;
-            }
+        table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .summary {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -120,31 +147,37 @@
         </form>
 
         <!-- Report Table -->
-        <table>
-        <thead>
-                <tr>
-                    <th>Period</th>
-                    <th>Total Price (RM)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Daily</td>
-                    <td>{{ $dailyTotal }}</td>
-                </tr>
-                <tr>
-                    <td>Monthly</td>
-                    <td>{{ $monthlyTotal }}</td>
-                </tr>
-                <tr>
-                    <td>Yearly</td>
-                    <td>{{ $yearlyTotal }}</td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="summary">
-            Overall Total Price: RM {{ $overallTotal }}
+        <div class="report-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Total Price (RM)</th>
+                        <th>Total Customer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Daily</td>
+                        <td>{{ $dailyTotalPrice }}</td>
+                        <td>{{ $dailyTotalRecords }}</td>
+                    </tr>
+                    <tr>
+                        <td>Monthly</td>
+                        <td>{{ $monthlyTotalPrice }}</td>
+                        <td>{{ $monthlyTotalRecords }}</td>
+                    </tr>
+                    <tr>
+                        <td>Yearly</td>
+                        <td>{{ $yearlyTotalPrice }}</td>
+                        <td>{{ $yearlyTotalRecords }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="summary">
+                Overall Total Price: RM {{ $overallTotalPrice }}
+            </div>
         </div>
-    </div></x-app-layout>
+</x-app-layout>
 </body>
 </html>
