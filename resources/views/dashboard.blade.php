@@ -82,6 +82,17 @@
 </head>
 <body>
 <div class="dashboard">
+    @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
         <div class="overview">
             <div class="card">
                 <h3>Appointments</h3>

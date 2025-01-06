@@ -65,6 +65,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/get-service-price/{id}', [AppointmentController::class, 'getServicePrice'])->name('getServicePrice');
     Route::put('/appointments/{id}/update-status', [AppointmentController::class, 'updateStatus'])->name('appointments.updateStatus');
     Route::get('/appointment/report', [AppointmentController::class, 'report'])->name('appointment.report');
+    Route::get('/appointment/report/data', [AppointmentController::class, 'getReportData'])->name('appointment.report.data');
 
 
     // Profile management routes

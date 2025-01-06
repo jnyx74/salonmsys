@@ -4,17 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Report Analysis</title>
-     <!-- Fonts -->
-     <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            font-family: 'Figtree', Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Figtree', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
             margin: 0;
             padding: 0;
         }
-        
+
         .filter-form {
             display: flex;
             flex-wrap: wrap;
@@ -51,34 +54,9 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-        
+
         .filter-form button:hover {
             background-color: #0056b3;
-        }
-        
-        .report-banner {
-            position: relative;
-            width: 100%;
-            height: 300px;
-            background: url('image/report.jpg') no-repeat center center/cover;
-            text-align: center;
-            color: white;
-        }
-
-        .report-banner .banner-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 20px 40px;
-            border-radius: 5px;
-            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        .report-banner h1 {
-            font-size: 36px;
-            margin: 0;
         }
 
         .report-container {
@@ -88,22 +66,21 @@
             max-width: 1000px;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
-
         h2 {
             text-align: center;
             margin-bottom: 20px;
             color: #333;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            margin-bottom: 20px;
         }
 
         table th, table td {
-            padding: 15px;
+            padding: 10px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
@@ -127,6 +104,17 @@
             font-size: 18px;
             font-weight: bold;
         }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .chart-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -137,47 +125,70 @@
         </h2>
     </x-slot>
 
-        <!-- Filter Form -->
-        <form method="GET" action="{{ route('appointment.report') }}" class="filter-form">
-            <label for="start_date">Start Date:</label>
-            <input type="date" name="start_date" id="start_date" value="{{ request('start_date', $startDate) }}">
-            <label for="end_date">End Date:</label>
-            <input type="date" name="end_date" id="end_date" value="{{ request('end_date', $endDate) }}">
-            <button type="submit">Filter</button>
-        </form>
+    <!-- Filter Form -->
+    <form method="GET" action="{{ route('appointment.report') }}" class="filter-form">
+        <label for="start_date">Start Date:</label>
+        <input type="date" name="start_date" id="start_date" value="{{ request('start_date', $startDate) }}">
+        <label for="end_date">End Date:</label>
+        <input type="date" name="end_date" id="end_date" value="{{ request('end_date', $endDate) }}">
+        <button type="submit">Filter</button>
+    </form>
 
-        <!-- Report Table -->
-        <div class="report-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Period</th>
-                        <th>Total Price (RM)</th>
-                        <th>Total Customer</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Daily</td>
-                        <td>{{ $dailyTotalPrice }}</td>
-                        <td>{{ $dailyTotalRecords }}</td>
-                    </tr>
-                    <tr>
-                        <td>Monthly</td>
-                        <td>{{ $monthlyTotalPrice }}</td>
-                        <td>{{ $monthlyTotalRecords }}</td>
-                    </tr>
-                    <tr>
-                        <td>Yearly</td>
-                        <td>{{ $yearlyTotalPrice }}</td>
-                        <td>{{ $yearlyTotalRecords }}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="summary">
-                Overall Total Price: RM {{ $overallTotalPrice }}
-            </div>
-        </div>
+    <!-- Report Table -->
+    <div class="report-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Period</th>
+                    <th>Total Price (RM)</th>
+                    <th>Total Customer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Total</td>
+                    <td>{{ $totalPrice }}</td>
+                    <td>{{ $totalRecords }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Chart -->
+        <canvas id="reportChart"></canvas>
+    </div>
 </x-app-layout>
+
+<script>
+    // Data for the chart
+    const chartLabels = {!! json_encode($chartLabels) !!}; // Labels (e.g., 'January', 'February')
+    const chartData = {!! json_encode($chartData) !!}; // Data for the graph (e.g., total price or customers)
+
+    const ctx = document.getElementById('reportChart').getContext('2d');
+    const reportChart = new Chart(ctx, {
+        type: 'bar', // You can use 'line', 'pie', etc.
+        data: {
+            labels: chartLabels,
+            datasets: [{
+                label: 'Total Price (RM)',
+                data: chartData,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Report Analysis'
+                }
+            }
+        }
+    });
+</script>
 </body>
 </html>

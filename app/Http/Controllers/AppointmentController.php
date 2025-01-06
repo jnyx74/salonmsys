@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Appointment;
 use App\Models\Service;
 use App\Models\Hairdresser;
+use DateTime;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,38 +15,22 @@ class AppointmentController extends Controller
     public function index()
     {
         $appointments = Appointment::with('service') // Eager load service
-        ->orderBy('id', 'asc')
-        ->paginate(100000);
+            ->orderBy('id', 'asc')
+            ->paginate(10); // Adjust pagination size as needed
 
         return view('appointment.index', compact('appointments'));
     }
- 
-    /**
-    * Show the form for creating a new resource.
-    *
-    * @return \Illuminate\Http\Response
-    */
+
     public function create()
     {
-        // Fetch services from the service table
-        $services = Service::all(); 
-        // Fetch services from the hairdresser table
-        $hairdressers = Hairdresser::all(); 
+        $services = Service::all();
+        $hairdressers = Hairdresser::all();
 
-        // Pass services to the view
-        return view('appointment.create', compact('services','hairdressers'));
-   
+        return view('appointment.create', compact('services', 'hairdressers'));
     }
- 
-    /**
-    * Store a newly created resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @return \Illuminate\Http\Response
-    */
+
     public function store(Request $request)
     {
-        
         $request->validate([
             'hairdresser_id' => [
                 'required',
@@ -60,172 +46,145 @@ class AppointmentController extends Controller
                     }
                 },
             ],
-            'appointment_date' => ['required', 'date', 'after_or_equal:tomorrow'],
+            'appointment_date' => ['required', 'date', 'after_or_equal:today'],
             'appointment_time' => 'required|date_format:H:i',
         ]);
-        // Associating the logged-in user with the appointment
+
+        $existingAppointment = Appointment::where('user_id', auth()->id())
+            ->where('appointment_date', $request->appointment_date)
+            ->whereNotIn('status', ['Completed', 'Canceled'])
+            ->exists();
+
+        if ($existingAppointment) {
+            return redirect()->back()->withErrors([
+                'appointment_date' => 'You have already booked an appointment on this date.',
+            ])->withInput();
+        }
+
         $request->merge(['user_id' => auth()->id()]);
-    
         Appointment::create($request->post());
-    
+
         return redirect()->route('appointment.calendar')->with('success', 'Appointment has been created successfully.');
     }
 
-    public function showCalendar($id = null)
-{
-    $appointments = Appointment::all(); // Assuming you have an Appointment model
-     // Fetch services from the service table
-     $services = Service::all(); 
-     // Fetch services from the hairdresser table
-     $hairdressers = Hairdresser::all(); 
+    public function showCalendar()
+    {
+        $appointments = Appointment::with(['service', 'hairdresser'])->get();
+        $services = Service::all();
+        $hairdressers = Hairdresser::all();
 
-     // Pass services to the view
-    return view('appointment.calendar', compact('appointments','services','hairdressers'));
-}
+        return view('appointment.calendar', compact('appointments', 'services', 'hairdressers'));
+    }
 
- 
-    /**
-    * Display the specified resource.
-    *
-    * @param  \App\appointment  $appointment
-    * @return \Illuminate\Http\Response
-    */
     public function show(Appointment $appointment)
     {
-        return view('show',compact('appointment'));
+        return view('appointment.show', compact('appointment'));
     }
- 
-    /**
-    * Show the form for editing the specified resource.
-    *
-    * @param  \App\Models\appointment $appointment
-    * @return \Illuminate\Http\Response
-    */
+
     public function edit($id)
     {
-        // Fetch services from the service table
-        $services = Service::all(); 
-        // Fetch services from the hairdresser table
-        $hairdressers = Hairdresser::all(); 
-
+        $services = Service::all();
+        $hairdressers = Hairdresser::all();
         $appointment = Appointment::findOrFail($id);
-        return view('appointment.edit',compact('appointment','services','hairdressers'));
+
+        return view('appointment.edit', compact('appointment', 'services', 'hairdressers'));
     }
- 
-    /**
-    * Update the specified resource in storage.
-    *
-    * @param  \Illuminate\Http\Request  $request
-    * @param  \App\Models\appointment  $appointment
-    * @return \Illuminate\Http\Response
-    */
-    public function update(Request $request,$id)
+
+    public function update(Request $request, $id)
     {
         $appointment = Appointment::findOrFail($id);
+
+        $request->validate([
+            'status' => ['required', Rule::in(['Pending', 'Confirmed', 'Completed', 'Canceled'])],
+        ]);
+
         $appointment->update($request->all());
- 
-        return redirect()->route('appointment.calendar')->with('success','appointment Has Been updated successfully');
+
+        return redirect()->route('appointment.calendar')->with('success', 'Appointment has been updated successfully.');
     }
- 
-    /**
-    * Remove the specified resource from storage.
-    *
-    * @param  \App\Models\appointment $appointment
-    * @return \Illuminate\Http\Response
-    */
+
     public function destroy(Appointment $appointment)
     {
         $appointment->delete();
-        return redirect()->route('appointment.calendar')->with('success','appointment has been deleted successfully');
+        return redirect()->route('appointment.calendar')->with('success', 'Appointment has been deleted successfully.');
     }
-
 
     public function getServicePrice($id)
-{
-    $service = Service::find($id);
-    if ($service) {
+    {
+        $service = Service::find($id);
         return response()->json(['price' => $service->service_category]);
-    } else {
-        return response()->json(['price' => null]);
-    }
-}
-
-
-public function checkAvailability(Request $request)
-{
-    $available = !DB::table('appointments')
-        ->where('hairdresser_id', $request->hairdresser_id)
-        ->where('appointment_date', $request->appointment_date)
-        ->exists();
-
-    return response()->json(['available' => $available]);
-}
-
-public function updateStatus(Request $request, $id)
-{
-    $appointment = Appointment::findOrFail($id);
-    $appointment->status = $request->status;
-    $appointment->save();
-
-    return redirect()->route('dashboard')->with('success', 'Appointment status updated successfully!');
-}
-
-public function report(Request $request) 
-{
-    // Get the date range from the request
-    $startDate = $request->input('start_date');
-    $endDate = $request->input('end_date');
-
-    // If no date range is provided, use default values
-    if (!$startDate || !$endDate) {
-        $startDate = now()->startOfMonth()->format('Y-m-d'); // Default to start of the month
-        $endDate = now()->endOfMonth()->format('Y-m-d');     // Default to end of the month
     }
 
-    // Query totals within the date range
-    $dailyTotalPrice = DB::table('appointments')
-        ->join('services', 'appointments.service_id', '=', 'services.id')
-        ->whereBetween('appointments.appointment_date', [$startDate, $endDate])
-        ->whereDate('appointments.appointment_date', today())
-        ->sum('services.service_category');
+    public function checkAvailability(Request $request)
+    {
+        $available = !DB::table('appointments')
+            ->where('hairdresser_id', $request->hairdresser_id)
+            ->where('appointment_date', $request->appointment_date)
+            ->exists();
 
-    $monthlyTotalPrice = DB::table('appointments')
-        ->join('services', 'appointments.service_id', '=', 'services.id')
-        ->whereBetween('appointments.appointment_date', [$startDate, $endDate])
-        ->whereMonth('appointments.appointment_date', now()->month)
-        ->sum('services.service_category');
+        return response()->json(['available' => $available]);
+    }
 
-    $yearlyTotalPrice = DB::table('appointments')
-        ->join('services', 'appointments.service_id', '=', 'services.id')
-        ->whereBetween('appointments.appointment_date', [$startDate, $endDate])
-        ->whereYear('appointments.appointment_date', now()->year)
-        ->sum('services.service_category');
+    public function updateStatus(Request $request, $id)
+    {
+        $appointment = Appointment::findOrFail($id);
 
-    $overallTotalPrice = $dailyTotalPrice + $monthlyTotalPrice + $yearlyTotalPrice;
+        // Check if the status is 'completed'
+        if ($appointment->status === 'completed') {
+            return redirect()->route('dashboard')->with('error', 'Completed appointments cannot be edited.');
+        }
 
-    // Query counts within the date range
-    $dailyTotalRecords = DB::table('appointments')
-        ->whereBetween('appointment_date', [$startDate, $endDate])
-        ->whereDate('appointment_date', today())
-        ->count();
+        $request->validate([
+            'status' => ['required', Rule::in(['Pending', 'Confirmed', 'Completed', 'Canceled'])],
+        ]);
 
-    $monthlyTotalRecords = DB::table('appointments')
-        ->whereBetween('appointment_date', [$startDate, $endDate])
-        ->whereMonth('appointment_date', now()->month)
-        ->count();
+        $appointment->status = $request->status;
+        $appointment->save();
 
-    $yearlyTotalRecords = DB::table('appointments')
-        ->whereBetween('appointment_date', [$startDate, $endDate])
-        ->whereYear('appointment_date', now()->year)
-        ->count();
+        return redirect()->route('dashboard')->with('success', 'Appointment status updated successfully!');
+    }
 
-    $overallTotalRecords = $dailyTotalRecords + $monthlyTotalRecords + $yearlyTotalRecords;
+    public function report(Request $request) 
+    {
+        // Default date range: current month
+        $startDate = $request->input('start_date', now()->startOfMonth()->format('Y-m-d'));
+        $endDate = $request->input('end_date', now()->endOfMonth()->format('Y-m-d'));
 
-    return view('appointment.report', compact(
-        'dailyTotalPrice', 'monthlyTotalPrice', 'yearlyTotalPrice', 'overallTotalPrice',
-        'dailyTotalRecords', 'monthlyTotalRecords', 'yearlyTotalRecords', 'overallTotalRecords',
-        'startDate', 'endDate'
-    ));
+        // Calculate total price for completed appointments within the selected date range
+        $totalPrice = DB::table('appointments')
+            ->join('services', 'appointments.service_id', '=', 'services.id')
+            ->where('appointments.status', 'completed')
+            ->whereBetween('appointments.appointment_date', [$startDate, $endDate])
+            ->sum('services.service_category');
+
+        // Count total records (completed appointments) for the selected date range
+        $totalRecords = DB::table('appointments')
+            ->where('status', 'completed')
+            ->whereBetween('appointment_date', [$startDate, $endDate])
+            ->count();
+
+        // Generate chart data: Monthly breakdown within the selected range
+        $chartLabels = [];
+        $chartData = [];
+
+        // Get data grouped by month for completed appointments
+        $monthlyData = DB::table('appointments')
+            ->join('services', 'appointments.service_id', '=', 'services.id')
+            ->selectRaw('MONTH(appointments.appointment_date) as month, SUM(services.service_category) as total')
+            ->where('appointments.status', 'completed')
+            ->whereBetween('appointments.appointment_date', [$startDate, $endDate])
+            ->groupByRaw('MONTH(appointments.appointment_date)')
+            ->orderByRaw('MONTH(appointments.appointment_date)')
+            ->get();
+
+        // Fill labels and data
+        foreach ($monthlyData as $data) {
+            $chartLabels[] = \DateTime::createFromFormat('!m', $data->month)->format('F'); // Get month name
+            $chartData[] = $data->total;
+        }
+
+        // Pass data to the view
+        return view('appointment.report', compact('chartLabels', 'chartData', 'totalPrice', 'totalRecords', 'startDate', 'endDate'));
+    }
+    
 }
-}
-
