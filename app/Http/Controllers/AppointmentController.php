@@ -130,12 +130,12 @@ class AppointmentController extends Controller
         $appointment = Appointment::findOrFail($id);
 
         // Check if the status is 'completed'
-        if ($appointment->status === 'completed') {
+        if ($appointment->status === 'Completed') {
             return redirect()->route('dashboard')->with('error', 'Completed appointments cannot be edited.');
         }
 
         $request->validate([
-            'status' => ['required', Rule::in(['Pending', 'Confirmed', 'Completed', 'Canceled'])],
+            'status' => ['required', Rule::in(['In Progress', 'Completed', 'Cancelled'])],
         ]);
 
         $appointment->status = $request->status;
