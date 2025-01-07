@@ -199,10 +199,12 @@
 
             <div class="form-group">
                 <label for="appointment_time">Appointment Time</label>
-                <input type="time" name="appointment_time" id="appointment_time" class="appointment_time" style="width:100%">
-                @error('appointment_time')
-                    <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
-                @enderror
+                <select id="appointment_time" name="appointment_time" class="form-control" required>
+                    <option value="" disabled selected>Select a time</option>
+                    @foreach ($validTimes as $time)
+                        <option value="{{ $time }}">{{ $time }}</option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="form-group">

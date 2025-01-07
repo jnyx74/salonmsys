@@ -99,6 +99,7 @@
                 <div class="content">
                     <h1>Salon Reservation</h1>
                     <p>An all-in-one solution for your business, offering online booking and point-of-sale services.</p>
+                    <p style="text-decoration:underline;"><b>Open Everyday From 8am to 9pm</b></p>
                     
                 </div>
             </div>

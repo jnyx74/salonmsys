@@ -389,20 +389,19 @@
                 @enderror
             </div>
 
-                            <div class="form-group">
-                                <label for="service_id">Service Name</label>
-                                <select name="service_id" id="service_id" class="form-control" style="width:100%">
-                                    <option value="" disabled selected>Select a service</option>
-                                    @foreach($services as $service)
-                                        <option value="{{ $service->id }}">{{ $service->service_name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('service_id')<div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>@enderror
-                            </div>
-                            <div class="form-group">
-                                <label for="service_category">Price</label>
-                                <input type="text" id="service_category" class="form-control" placeholder="Service price will appear here" readonly>
-                            </div>
+            <div class="form-group">
+                <label for="service_id">Service Name</label>
+                <select name="service_id" id="service_id" class="form-control" style="width:100%">
+                    <option value="" disabled selected>Select a service</option>
+                    @foreach($services as $service)
+                        <option value="{{ $service->id }}" data-price="{{ $service->service_category }}">
+                            {{ $service->service_name }} (RM {{ $service->service_category }})
+                        </option>
+                    @endforeach
+                </select>
+                @error('service_id')<div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>@enderror
+            </div>
+
                             <div class="form-group">
                                 <label for="hairdresser_id">Hairdresser Name</label>
                                 <select name="hairdresser_id" id="hairdresser_id" class="form-control" style="width:100%">
@@ -414,8 +413,15 @@
                                 @error('hairdresser_id')<div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>@enderror
                             </div><label>Appointment Date:</label>
                             <input type="date" name="appointment_date" value="${info.dateStr}" readonly>
-                            <label>Appointment Time:</label>
-                            <input type="time" name="appointment_time" required>
+                          
+                            <label for="appointment_time">Appointment Time</label>
+                            <select id="appointment_time" name="appointment_time" class="form-control" required>
+                                <option value="" disabled selected>Select a time</option>
+                                @foreach ($validTimes as $time)
+                                    <option value="{{ $time }}">{{ $time }}</option>
+                                @endforeach
+                            </select>
+                        
                             <button type="submit" class="btn" style="width: 100%; background-color: #4CAF50; color: white;">Proceed with cash payment</button>
                         </form>
                         <button onclick="closeModal()" style="padding: 5px 10px; margin-top: 10px; width: 100%;">Cancel</button>
@@ -515,6 +521,19 @@
             } else {
                 $('#service_category').val('');
             }
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        const serviceSelect = document.getElementById('service_id');
+        const serviceCategoryInput = document.getElementById('service_category');
+
+        serviceSelect.addEventListener('change', function () {
+            // Get the selected option
+            const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
+            // Get the data-price attribute value
+            const serviceCategory = selectedOption.getAttribute('data-price');
+            // Update the price input field
+            serviceCategoryInput.value = serviceCategory || '';
         });
     });
 </script>

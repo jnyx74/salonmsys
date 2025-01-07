@@ -25,8 +25,9 @@ class AppointmentController extends Controller
     {
         $services = Service::all();
         $hairdressers = Hairdresser::all();
+        $validTimes = $this->generateValidTimes();
 
-        return view('appointment.create', compact('services', 'hairdressers'));
+        return view('appointment.create', compact('services', 'hairdressers','validTimes'));
     }
 
     public function store(Request $request)
@@ -47,7 +48,12 @@ class AppointmentController extends Controller
                 },
             ],
             'appointment_date' => ['required', 'date', 'after_or_equal:today'],
-            'appointment_time' => 'required|date_format:H:i',
+            'appointment_time' => [
+                'required',
+                'date_format:H:i',
+                Rule::in($this->generateValidTimes()),
+            ],
+            'appointment_date' => ['required', 'date', 'after_or_equal:today'],
         ]);
 
         $existingAppointment = Appointment::where('user_id', auth()->id())
@@ -72,8 +78,9 @@ class AppointmentController extends Controller
         $appointments = Appointment::with(['service', 'hairdresser'])->get();
         $services = Service::all();
         $hairdressers = Hairdresser::all();
+        $validTimes = $this->generateValidTimes();
 
-        return view('appointment.calendar', compact('appointments', 'services', 'hairdressers'));
+        return view('appointment.calendar', compact('appointments', 'services', 'hairdressers','validTimes'));
     }
 
     public function show(Appointment $appointment)
@@ -86,8 +93,9 @@ class AppointmentController extends Controller
         $services = Service::all();
         $hairdressers = Hairdresser::all();
         $appointment = Appointment::findOrFail($id);
+        $validTimes = $this->generateValidTimes();
 
-        return view('appointment.edit', compact('appointment', 'services', 'hairdressers'));
+        return view('appointment.edit', compact('appointment', 'services', 'hairdressers','validTimes'));
     }
 
     public function update(Request $request, $id)
@@ -101,6 +109,24 @@ class AppointmentController extends Controller
         $appointment->update($request->all());
 
         return redirect()->route('appointment.calendar')->with('success', 'Appointment has been updated successfully.');
+    }
+
+
+    private function generateValidTimes($bookedTimes = [])
+    {
+        $times = [];
+        $start = new DateTime('08:00');
+        $end = new DateTime('21:00');
+
+        while ($start <= $end) {
+            $time = $start->format('H:i');
+            if (!in_array($time, $bookedTimes)) {
+                $times[] = $time;
+            }
+            $start->modify('+30 minutes');
+        }
+
+        return $times;
     }
 
     public function destroy(Appointment $appointment)
