@@ -115,10 +115,49 @@
                 width: 90%;
             }
         }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
         </style>
     </head>
     <body>
     <x-app-layout>
+        @if(session('success'))
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i>
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ session('error') }}
+            </div>
+        @endif
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __(' Edit Appointment Detail') }}
@@ -150,12 +189,8 @@
 
             <div class="form-group">
                 <label for="status">Status</label>
-                <select name="status" id="status" class="form-control" style="width:100%">
-                    <option value="" disabled>Select a status</option>
-                    <option value="In Progress" {{ $appointment->status == 'In Progress' ? 'selected' : '' }}>In Progress</option>
-                    <option value="Completed" {{ $appointment->status == 'Completed' ? 'selected' : '' }}>Completed</option>
-                    <option value="Cancelled" {{ $appointment->status == 'Cancelled' ? 'selected' : '' }}>Cancelled</option>
-                </select>
+                <input type="text" name="status_display" id="status_display" class="form-control" style="width:100%" value="{{ $appointment->status }}" readonly>
+                <input type="hidden" name="status" value="{{ $appointment->status ?? 'In Progress' }}">
                 @error('status')
                     <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                 @enderror
@@ -191,7 +226,7 @@
 
             <div class="form-group">
                 <label for="appointment_date">Appointment Date</label>
-                <input type="date" name="appointment_date" id="appointment_date" class="appointment_date" style="width:100%" value="{{ $appointment->appointment_date }}">
+                <input type="date" name="appointment_date" id="appointment_date" class="form-control w-100" value="{{ $appointment->appointment_date }}">
                 @error('appointment_date')
                     <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                 @enderror
@@ -199,10 +234,14 @@
 
             <div class="form-group">
                 <label for="appointment_time">Appointment Time</label>
-                <input type="time" name="appointment_time" id="appointment_time" class="appointment_time" style="width:100%" value="{{ $appointment->appointment_time }}">
-                @error('appointment_time')
-                    <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
-                @enderror
+                <select id="appointment_time" name="appointment_time" class="form-control w-100">
+                    <option value="" disabled>Select a time</option>
+                    @foreach ($validTimes as $time)
+                        <option value="{{ $time }}" {{ $appointment->appointment_time == $time ? 'selected' : '' }}>
+                            {{ $time }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="form-group">

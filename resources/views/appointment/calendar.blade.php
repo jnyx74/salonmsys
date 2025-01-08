@@ -264,16 +264,56 @@
             opacity: 1;
         }
     }
+
+    .alert {
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    .alert i {
+        margin-right: 10px;
+        font-size: 18px;
+    }
         </style>
         
 <body>
 <x-app-layout>
+        @if(session('success'))
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i>
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ session('error') }}
+            </div>
+        @endif
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __(' Appointment Calendar') }}
         </h2>
     </x-slot>
     <div class="container">
+        
       <!-- appointment Buttons -->
       <div class="appointment-buttons">
                 <a href="{{ route('appointment.create') }}" class="btn">New Appointment</a>

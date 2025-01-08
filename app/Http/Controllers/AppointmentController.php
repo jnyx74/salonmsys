@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Appointment;
 use App\Models\Service;
 use App\Models\Hairdresser;
+use App\Models\User;
 use DateTime;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
@@ -47,40 +48,60 @@ class AppointmentController extends Controller
                     }
                 },
             ],
+            'status' => ['required', Rule::in(['In Progress', 'Completed', 'Cancelled'])],
             'appointment_date' => ['required', 'date', 'after_or_equal:today'],
             'appointment_time' => [
                 'required',
                 'date_format:H:i',
                 Rule::in($this->generateValidTimes()),
             ],
-            'appointment_date' => ['required', 'date', 'after_or_equal:today'],
         ]);
+
+        $hasIncompleteAppointments = Appointment::where('user_id', auth()->id())
+            ->whereNotIn('status', ['Completed', 'Cancelled'])
+            ->exists();
+
+        if ($hasIncompleteAppointments) {
+            session()->flash('error', 'You cannot book a new appointment as you have an incomplete appointment.');
+            return redirect()->back()->withInput();
+        }
 
         $existingAppointment = Appointment::where('user_id', auth()->id())
             ->where('appointment_date', $request->appointment_date)
-            ->whereNotIn('status', ['Completed', 'Canceled'])
+            ->where(function ($query) {
+                $query->whereNotIn('status', ['Completed', 'Cancelled']);
+            })
             ->exists();
 
         if ($existingAppointment) {
-            return redirect()->back()->withErrors([
-                'appointment_date' => 'You have already booked an appointment on this date.',
-            ])->withInput();
+            session()->flash('error', 'You cannot book a new appointment as you already have an incomplete appointment.');
+            return redirect()->back()->withInput();
         }
 
         $request->merge(['user_id' => auth()->id()]);
         Appointment::create($request->post());
 
-        return redirect()->route('appointment.calendar')->with('success', 'Appointment has been created successfully.');
+        session()->flash('success', 'Appointment has been created successfully.');
+        return redirect()->route('appointment.calendar');
     }
 
     public function showCalendar()
     {
-        $appointments = Appointment::with(['service', 'hairdresser'])->get();
-        $services = Service::all();
-        $hairdressers = Hairdresser::all();
+        $userId = auth()->id(); // Get the logged-in user's ID
+
+        // Filter appointments by the logged-in user
+        $appointments = Appointment::with(['service', 'hairdresser'])
+            ->where('user_id', $userId)
+            ->get();
+
+        // Get all services and hairdressers for the logged-in user (if needed)
+        $services = Service::all(); // Or filter based on user preferences if needed
+        $hairdressers = Hairdresser::all(); // Or filter based on user preferences if needed
+
+        // Generate valid appointment times
         $validTimes = $this->generateValidTimes();
 
-        return view('appointment.calendar', compact('appointments', 'services', 'hairdressers','validTimes'));
+        return view('appointment.calendar', compact('appointments', 'services', 'hairdressers', 'validTimes'));
     }
 
     public function show(Appointment $appointment)
@@ -90,20 +111,26 @@ class AppointmentController extends Controller
 
     public function edit($id)
     {
+        $appointment = Appointment::findOrFail($id);
         $services = Service::all();
         $hairdressers = Hairdresser::all();
-        $appointment = Appointment::findOrFail($id);
-        $validTimes = $this->generateValidTimes();
 
-        return view('appointment.edit', compact('appointment', 'services', 'hairdressers','validTimes'));
+        // Fetch booked times for the selected date and hairdresser
+        $bookedTimes = $this->getBookedTimes($appointment->appointment_date, $appointment->hairdresser_id);
+
+        // Generate valid times excluding booked ones
+        $validTimes = $this->generateValidTimes($bookedTimes);
+
+        return view('appointment.edit', compact('appointment', 'services', 'hairdressers', 'validTimes'));
     }
-
+        
+    
     public function update(Request $request, $id)
     {
         $appointment = Appointment::findOrFail($id);
 
         $request->validate([
-            'status' => ['required', Rule::in(['Pending', 'Confirmed', 'Completed', 'Canceled'])],
+            'status' => ['required', Rule::in(['In Progress', 'Confirmed', 'Completed', 'Cancelled'])],
         ]);
 
         $appointment->update($request->all());
@@ -120,6 +147,7 @@ class AppointmentController extends Controller
 
         while ($start <= $end) {
             $time = $start->format('H:i');
+            // Only include times that are not in the $bookedTimes array
             if (!in_array($time, $bookedTimes)) {
                 $times[] = $time;
             }
@@ -169,6 +197,17 @@ class AppointmentController extends Controller
 
         return redirect()->route('dashboard')->with('success', 'Appointment status updated successfully!');
     }
+
+    private function getBookedTimes($appointmentDate, $hairdresserId = null)
+        {
+            $query = Appointment::where('appointment_date', $appointmentDate);
+
+            if ($hairdresserId) {
+                $query->where('hairdresser_id', $hairdresserId);
+            }
+
+            return $query->pluck('appointment_time')->toArray(); // Returns an array of booked times
+        }
 
     public function report(Request $request) 
     {
