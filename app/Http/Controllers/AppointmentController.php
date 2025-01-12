@@ -17,7 +17,7 @@ class AppointmentController extends Controller
     {
         $appointments = Appointment::with('service') // Eager load service
             ->orderBy('id', 'asc')
-            ->paginate(10); // Adjust pagination size as needed
+            ->paginate(100); // Adjust pagination size as needed
 
         return view('appointment.index', compact('appointments'));
     }
@@ -26,9 +26,18 @@ class AppointmentController extends Controller
     {
         $services = Service::all();
         $hairdressers = Hairdresser::all();
-        $validTimes = $this->generateValidTimes();
 
-        return view('appointment.create', compact('services', 'hairdressers','validTimes'));
+        // Get available times for the selected hairdresser and date if available
+        $validTimes = [];
+
+        if (request()->has('hairdresser_id') && request()->has('appointment_date')) {
+            $hairdresserId = request('hairdresser_id');
+            $appointmentDate = request('appointment_date');
+            $bookedTimes = $this->getBookedTimes($appointmentDate, $hairdresserId);
+            $validTimes = $this->generateValidTimes($bookedTimes);
+        }
+
+        return view('appointment.create', compact('services', 'hairdressers', 'validTimes'));
     }
 
     public function store(Request $request)
@@ -123,7 +132,7 @@ class AppointmentController extends Controller
 
         return view('appointment.edit', compact('appointment', 'services', 'hairdressers', 'validTimes'));
     }
-        
+            
     
     public function update(Request $request, $id)
     {
@@ -139,23 +148,7 @@ class AppointmentController extends Controller
     }
 
 
-    private function generateValidTimes($bookedTimes = [])
-    {
-        $times = [];
-        $start = new DateTime('08:00');
-        $end = new DateTime('21:00');
-
-        while ($start <= $end) {
-            $time = $start->format('H:i');
-            // Only include times that are not in the $bookedTimes array
-            if (!in_array($time, $bookedTimes)) {
-                $times[] = $time;
-            }
-            $start->modify('+30 minutes');
-        }
-
-        return $times;
-    }
+   
 
     public function destroy(Appointment $appointment)
     {
@@ -197,7 +190,15 @@ class AppointmentController extends Controller
 
         return redirect()->route('dashboard')->with('success', 'Appointment status updated successfully!');
     }
-
+    public function getAvailableTimes(Request $request)
+    {
+        $hairdresserId = $request->hairdresser_id;
+        $appointmentDate = $request->appointment_date;
+        $bookedTimes = $this->getBookedTimes($appointmentDate, $hairdresserId);
+        $validTimes = $this->generateValidTimes($bookedTimes);
+    
+        return response()->json(['validTimes' => $validTimes]);
+    }
     private function getBookedTimes($appointmentDate, $hairdresserId = null)
         {
             $query = Appointment::where('appointment_date', $appointmentDate);
@@ -208,7 +209,26 @@ class AppointmentController extends Controller
 
             return $query->pluck('appointment_time')->toArray(); // Returns an array of booked times
         }
+        
+        private function generateValidTimes($bookedTimes = [])
+        {
+            $times = [];
+            $start = new DateTime('08:00');
+            $end = new DateTime('21:00');
+    
+            while ($start <= $end) {
+                $time = $start->format('H:i');
+                // Only include times that are not in the $bookedTimes array
+                if (!in_array($time, $bookedTimes)) {
+                    $times[] = $time;
+                }
+                $start->modify('+30 minutes');
+            }
+    
+            return $times;
+        }
 
+   
     public function report(Request $request) 
     {
         // Default date range: current month

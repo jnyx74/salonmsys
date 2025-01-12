@@ -576,6 +576,24 @@
             serviceCategoryInput.value = serviceCategory || '';
         });
     });
+    $('#hairdresser_id, #appointment_date').on('change', function() {
+    var hairdresserId = $('#hairdresser_id').val();
+    var appointmentDate = $('#appointment_date').val();
+
+    if (hairdresserId && appointmentDate) {
+        $.ajax({
+            url: '/appointments/available-times', // Define a route for available times
+            method: 'GET',
+            data: { hairdresser_id: hairdresserId, appointment_date: appointmentDate },
+            success: function(response) {
+                $('#appointment_time').empty();
+                response.validTimes.forEach(function(time) {
+                    $('#appointment_time').append('<option value="' + time + '">' + time + '</option>');
+                });
+            }
+        });
+    }
+});
 </script>
 
 </body>

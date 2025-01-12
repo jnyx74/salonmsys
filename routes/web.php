@@ -5,6 +5,8 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\HairdresserController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,6 +38,11 @@ Route::get('/aboutus', function () {
     return view('aboutus');
 })->middleware(['auth', 'verified'])->name('about-us');
 
+
+Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
+Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
+
+
 Route::middleware(['auth', 'verified'])->group(function () {
     // Route to display the service creation form
     Route::get('/service/create', [ServiceController::class, 'create'])->name('service.create');
@@ -66,6 +73,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/appointments/{id}/update-status', [AppointmentController::class, 'updateStatus'])->name('appointments.updateStatus');
     Route::get('/appointment/report', [AppointmentController::class, 'report'])->name('appointment.report');
     Route::get('/appointment/report/data', [AppointmentController::class, 'getReportData'])->name('appointment.report.data');
+    Route::get('/appointments/available-times', [AppointmentController::class, 'getAvailableTimes']);
+
 
 
     // Profile management routes
