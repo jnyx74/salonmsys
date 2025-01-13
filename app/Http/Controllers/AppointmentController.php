@@ -10,6 +10,7 @@ use DateTime;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Notifications\CreatedNotication;
 
 class AppointmentController extends Controller
 {
@@ -65,31 +66,32 @@ class AppointmentController extends Controller
                 Rule::in($this->generateValidTimes()),
             ],
         ]);
-
         $hasIncompleteAppointments = Appointment::where('user_id', auth()->id())
-            ->whereNotIn('status', ['Completed', 'Cancelled'])
-            ->exists();
+        ->whereNotIn('status', ['Completed', 'Cancelled'])
+        ->exists();
 
-        if ($hasIncompleteAppointments) {
-            session()->flash('error', 'You cannot book a new appointment as you have an incomplete appointment.');
-            return redirect()->back()->withInput();
-        }
+    if ($hasIncompleteAppointments) {
+        session()->flash('error', 'You cannot book a new appointment as you have an incomplete appointment.');
+        return redirect()->back()->withInput();
+    }
 
-        $existingAppointment = Appointment::where('user_id', auth()->id())
-            ->where('appointment_date', $request->appointment_date)
-            ->where(function ($query) {
-                $query->whereNotIn('status', ['Completed', 'Cancelled']);
-            })
-            ->exists();
+    $existingAppointment = Appointment::where('user_id', auth()->id())
+        ->where('appointment_date', $request->appointment_date)
+        ->where(function ($query) {
+            $query->whereNotIn('status', ['Completed', 'Cancelled']);
+        })
+        ->exists();
 
-        if ($existingAppointment) {
-            session()->flash('error', 'You cannot book a new appointment as you already have an incomplete appointment.');
-            return redirect()->back()->withInput();
-        }
-
+    if ($existingAppointment) {
+        session()->flash('error', 'You cannot book a new appointment as you already have an incomplete appointment.');
+        return redirect()->back()->withInput();
+    }
         $request->merge(['user_id' => auth()->id()]);
-        Appointment::create($request->post());
-
+        $appointment = Appointment::create($request->post());
+    
+        // Send email notification
+        auth()->user()->notify(new CreatedNotication($appointment));
+    
         session()->flash('success', 'Appointment has been created successfully.');
         return redirect()->route('appointment.calendar');
     }
